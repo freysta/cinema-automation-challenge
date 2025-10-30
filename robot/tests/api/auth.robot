@@ -1,46 +1,76 @@
 *** Settings ***
 Resource    ../../resources/api/auth_service.robot
-Resource    ../../resources/api/main_api.robot
-Library    JSONLibrary
+Resource    ../../resources/api/admin_setup_service.robot
 
 *** Test Cases ***
-Teste Tentar Acessar Rota Sem Token
-    Tentar Acessar Rota Sem Token    /tickets    POST
+Suite Setup
+    ${result}=    Create Default Test Users Via Setup API
+    Run Keyword Unless    ${result}    Fail    Test users setup failed
 
-Teste Tentar Acessar Rota Com Token Inválido
-    Tentar Acessar Rota Com Token Inválido    /tickets    POST
+Login Bem-Sucedido
+    [Tags]    Auth    Positive
+    ${token}=    Login User    admin@example.com    password123
+    Should Not Be Empty    ${token}
 
-Teste Tentar Cadastrar Filme Com Token User
-    ${token_user}=    Login And Get Token    user@test.com    user123
-    Tentar Cadastrar Filme Com Token User    ${token_user}
+Login Com Senha Inválida
+    [Tags]    Auth    Negative
+    Login User And Expect Failure    admin@example.com    wrongpassword    401    Invalid email or password
 
-Teste Tentar Listar Todos Usuarios Com Token User
-    ${token_user}=    Login And Get Token    user@test.com    user123
-    Tentar Listar Todos Usuarios Com Token User    ${token_user}
+Login Com Usuário Inexistente
+    [Tags]    Auth    Negative
+    Login User And Expect Failure    nonexistent@example.com    password123    401    Invalid email or password
 
-Teste Cadastrar Filme Com Token Admin
-    ${token_admin}=    Login And Get Token    admin@test.com    admin123
-    ${movie_id}=    Cadastrar Filme Com Token Admin    ${token_admin}
-    Should Not Be Empty    ${movie_id}
+Teste Tentar Registrar Usuario Com Email Existente
+    [Tags]    Auth    Negative
+    ${email}=    Set Variable    test_user_duplicate@example.com
+    ${password}=    Set Variable    password123
+    ${name}=    Set Variable    Test User Duplicate
+    
+    # First, register the user successfully
+    Register User    ${name}    ${email}    ${password}
+    
+    # Then, attempt to register again with the same email, expecting failure
+    Registrar Usuario E Esperar Falha    ${name}    ${email}    ${password}    400    User already exists
 
-Teste Tentar Cadastrar Usuario Sem Email
-    Tentar Cadastrar Usuario Sem Email
+Teste Tentar Registrar Usuario Com Email Invalido
+    [Tags]    Auth    Robustness
+    ${email}=    Set Variable    invalid-email
+    ${password}=    Set Variable    password123
+    ${name}=    Set Variable    Invalid Email User
 
-Teste Validar Idempotencia Delete Usuario
-    ${token_admin}=    Login And Get Token    admin@test.com    admin123
-    ${user_id}=    Create User And Get Id    ${token_admin}    testuser@test.com    testpass    user
-    Validar Idempotencia Delete Usuario    ${token_admin}    ${user_id}
+    Registrar Usuario Com Email Invalido E Esperar Falha    ${name}    ${email}    ${password}    400    Validation failed
 
-*** Keywords ***
-Login And Get Token
-    [Arguments]    ${email}    ${password}
-    ${payload}=    Create Dictionary    email=${email}    password=${password}
-    ${response}=    POST    ${BASE_URL}/auth/login    json=${payload}    expected_status=200
-    [Return]    ${response.json()}[token]
+Teste Obter Perfil Do Usuario Logado
+    [Tags]    Auth    Positive
+    ${token}=    Login User    admin@example.com    password123
+    ${profile}=    Get User Profile    ${token}
+    Should Be Equal As Strings    ${profile}[email]    admin@example.com
+    Should Be Equal As Strings    ${profile}[role]    admin
 
-Create User And Get Id
-    [Arguments]    ${token_admin}    ${email}    ${password}    ${role}
-    ${headers}=    Create Dictionary    Authorization=Bearer ${token_admin}    Content-Type=application/json
-    ${payload}=    Create Dictionary    email=${email}    password=${password}    role=${role}
-    ${response}=    POST    ${BASE_URL}/users    headers=${headers}    json=${payload}    expected_status=201
-    [Return]    ${response.json()}[id]
+Teste Obter Perfil Sem Autenticacao
+    [Tags]    Auth    Negative
+    Get User Profile And Expect Failure    ${EMPTY}    401    Not authorized, no token
+
+Teste Obter Perfil Com Token Invalido
+    [Tags]    Auth    Negative
+    Get User Profile And Expect Failure    invalid_token    401    Not authorized, invalid token
+
+Teste Atualizar Perfil Do Usuario
+    [Tags]    Auth    Positive
+    ${token}=    Login User    admin@example.com    password123
+    ${updated_name}=    Set Variable    Admin Atualizado
+    ${payload}=    Create Dictionary    name=${updated_name}
+    ${updated_profile}=    Update User Profile    ${token}    ${payload}
+    Should Be Equal As Strings    ${updated_profile}[name]    ${updated_name}
+
+Teste Atualizar Perfil Sem Senha Atual
+    [Tags]    Auth    Negative
+    ${token}=    Login User    admin@example.com    password123
+    ${payload}=    Create Dictionary    newPassword=newpassword123
+    Update User Profile And Expect Failure    ${token}    ${payload}    401    Current password is incorrect
+
+Teste Atualizar Perfil Com Email Existente
+    [Tags]    Auth    Negative
+    ${token}=    Login User    admin@example.com    password123
+    ${payload}=    Create Dictionary    email=test@example.com
+    Update User Profile And Expect Failure    ${token}    ${payload}    409    Email already in use

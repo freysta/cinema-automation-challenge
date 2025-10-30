@@ -1,58 +1,105 @@
 *** Settings ***
 Library    RequestsLibrary
 Library    Collections
+Library    JSONLibrary
 
 *** Variables ***
-${BASE_URL}    http://localhost:3000
+${BASE_URL}    http://localhost:3000/api/v1
 
 *** Keywords ***
-Tentar Acessar Rota Sem Token
-    [Arguments]    ${url}    ${method}=GET
-    ${headers}=    Create Dictionary
-    Run Keyword And Expect Error    *401*    ${method}    ${BASE_URL}${url}    headers=${headers}
-    ${response}=    ${method}    ${BASE_URL}${url}    headers=${headers}    expected_status=any
-    Should Be Equal As Strings    ${response.status_code}    401
-    Should Be Equal As Strings    ${response.json()}[message]    Token ausente ou inválido
+Get JSON Headers
+    ${headers}=    Create Dictionary    Content-Type=application/json
+    [Return]    ${headers}
 
-Tentar Acessar Rota Com Token Inválido
-    [Arguments]    ${url}    ${method}=GET
-    ${headers}=    Create Dictionary    Authorization=Bearer invalid_token
-    ${response}=    ${method}    ${BASE_URL}${url}    headers=${headers}    expected_status=any
-    Should Be Equal As Strings    ${response.status_code}    401
-    Should Be Equal As Strings    ${response.json()}[message]    Token inválido
+Create API Session
+    [Arguments]    ${alias}    ${base_url}
+    Create Session    ${alias}    ${base_url}
 
-Tentar Cadastrar Filme Com Token User
-    [Arguments]    ${token_user}
-    ${headers}=    Create Dictionary    Authorization=Bearer ${token_user}    Content-Type=application/json
-    ${payload}=    Create Dictionary    title=Filme Teste    description=Descrição    duration=120
-    ${response}=    POST    ${BASE_URL}/movies    headers=${headers}    json=${payload}    expected_status=any
-    Should Be Equal As Strings    ${response.status_code}    403
-    Should Be Equal As Strings    ${response.json()}[message]    Permissão negada
+Login User
+    [Arguments]    ${email}    ${password}
+    Create API Session    cinema_api    ${BASE_URL}
+    ${headers}=    Get JSON Headers
+    ${payload}=    Create Dictionary    email=${email}    password=${password}
+    ${response}=    POST On Session    cinema_api    /auth/login    json=${payload}    headers=${headers}    expected_status=any
+    Should Be Equal As Strings    ${response.status_code}    200
+    Dictionary Should Contain Key    ${response.json()}    data
+    Dictionary Should Contain Key    ${response.json()}[data]    token
+    [Return]    ${response.json()}[data][token]
 
-Tentar Listar Todos Usuarios Com Token User
-    [Arguments]    ${token_user}
-    ${headers}=    Create Dictionary    Authorization=Bearer ${token_user}
-    ${response}=    GET    ${BASE_URL}/users    headers=${headers}    expected_status=any
-    Should Be Equal As Strings    ${response.status_code}    403
-    Should Be Equal As Strings    ${response.json()}[message]    Permissão negada
+Login User And Expect Failure
+    [Arguments]    ${email}    ${password}    ${expected_status_code}    ${expected_message}
+    Create API Session    cinema_api    ${BASE_URL}
+    ${headers}=    Get JSON Headers
+    ${payload}=    Create Dictionary    email=${email}    password=${password}
+    ${response}=    POST On Session    cinema_api    /auth/login    json=${payload}    headers=${headers}    expected_status=any
+    Should Be Equal As Strings    ${response.status_code}    ${expected_status_code}
+    Dictionary Should Contain Key    ${response.json()}    message
+    Should Be Equal As Strings    ${response.json()}[message]    ${expected_message}
 
-Cadastrar Filme Com Token Admin
-    [Arguments]    ${token_admin}
-    ${headers}=    Create Dictionary    Authorization=Bearer ${token_admin}    Content-Type=application/json
-    ${payload}=    Create Dictionary    title=Filme Teste    description=Descrição    duration=120
-    ${response}=    POST    ${BASE_URL}/movies    headers=${headers}    json=${payload}    expected_status=201
-    [Return]    ${response.json()}[id]
+Register User
+    [Arguments]    ${name}    ${email}    ${password}
+    Create API Session    cinema_api    ${BASE_URL}
+    ${headers}=    Get JSON Headers
+    ${payload}=    Create Dictionary    name=${name}    email=${email}    password=${password}
+    ${response}=    POST On Session    cinema_api    /auth/register    json=${payload}    headers=${headers}    expected_status=any
+    Should Be Equal As Strings    ${response.status_code}    201
+    Dictionary Should Contain Key    ${response.json()}    data
+    Dictionary Should Contain Key    ${response.json()}[data]    _id
+    Dictionary Should Contain Key    ${response.json()}[data]    email
+    Should Be Equal As Strings    ${response.json()}[data][email]    ${email}
+    Log    User ${email} registered successfully with ID: ${response.json()}[data][_id]
+    [Return]    ${response.json()}[data]
 
-Tentar Cadastrar Usuario Sem Email
-    ${payload}=    Create Dictionary    password=123456    role=user
-    ${response}=    POST    ${BASE_URL}/auth/register    json=${payload}    expected_status=any
-    Should Be Equal As Strings    ${response.status_code}    400
-    Should Be Equal As Strings    ${response.json()}[message]    Email é obrigatório
+Registrar Usuario E Esperar Falha
+    [Arguments]    ${name}    ${email}    ${password}    ${expected_status_code}    ${expected_message}
+    Create API Session    cinema_api    ${BASE_URL}
+    ${headers}=    Get JSON Headers
+    ${payload}=    Create Dictionary    name=${name}    email=${email}    password=${password}
+    ${response}=    POST On Session    cinema_api    /auth/register    json=${payload}    headers=${headers}    expected_status=any
+    Should Be Equal As Strings    ${response.status_code}    ${expected_status_code}
+    Dictionary Should Contain Key    ${response.json()}    message
+    Should Be Equal As Strings    ${response.json()}[message]    ${expected_message}
 
-Validar Idempotencia Delete Usuario
-    [Arguments]    ${token_admin}    ${user_id}
-    ${headers}=    Create Dictionary    Authorization=Bearer ${token_admin}
-    ${response1}=    DELETE    ${BASE_URL}/users/${user_id}    headers=${headers}    expected_status=200
-    ${response2}=    DELETE    ${BASE_URL}/users/${user_id}    headers=${headers}    expected_status=any
-    Should Be True    ${response2.status_code} in [404, 200]
-    Run Keyword If    ${response2.status_code} == 200    Should Be Equal As Strings    ${response2.json()}[message]    Usuário não encontrado
+Registrar Usuario Com Email Invalido E Esperar Falha
+    [Arguments]    ${name}    ${email}    ${password}    ${expected_status_code}    ${expected_message}
+    Create API Session    cinema_api    ${BASE_URL}
+    ${headers}=    Get JSON Headers
+    ${payload}=    Create Dictionary    name=${name}    email=${email}    password=${password}
+    ${response}=    POST On Session    cinema_api    /auth/register    json=${payload}    headers=${headers}    expected_status=any
+    Should Be Equal As Strings    ${response.status_code}    ${expected_status_code}
+    Dictionary Should Contain Key    ${response.json()}    message
+    Should Be Equal As Strings    ${response.json()}[message]    ${expected_message}
+
+Get User Profile
+    [Arguments]    ${token}
+    Create API Session    cinema_api    ${BASE_URL}
+    ${headers}=    Create Dictionary    Authorization=Bearer ${token}    Content-Type=application/json
+    ${response}=    GET On Session    cinema_api    /auth/me    headers=${headers}    expected_status=200
+    Dictionary Should Contain Key    ${response.json()}    data
+    [Return]    ${response.json()}[data]
+
+Get User Profile And Expect Failure
+    [Arguments]    ${token}    ${expected_status_code}    ${expected_message}
+    Create API Session    cinema_api    ${BASE_URL}
+    ${headers}=    Create Dictionary    Authorization=Bearer ${token}    Content-Type=application/json
+    ${response}=    GET On Session    cinema_api    /auth/me    headers=${headers}    expected_status=any
+    Should Be Equal As Strings    ${response.status_code}    ${expected_status_code}
+    Dictionary Should Contain Key    ${response.json()}    message
+    Should Be Equal As Strings    ${response.json()}[message]    ${expected_message}
+
+Update User Profile
+    [Arguments]    ${token}    ${payload}
+    Create API Session    cinema_api    ${BASE_URL}
+    ${headers}=    Create Dictionary    Authorization=Bearer ${token}    Content-Type=application/json
+    ${response}=    PUT On Session    cinema_api    /auth/profile    json=${payload}    headers=${headers}    expected_status=200
+    Dictionary Should Contain Key    ${response.json()}    data
+    [Return]    ${response.json()}[data]
+
+Update User Profile And Expect Failure
+    [Arguments]    ${token}    ${payload}    ${expected_status_code}    ${expected_message}
+    Create API Session    cinema_api    ${BASE_URL}
+    ${headers}=    Create Dictionary    Authorization=Bearer ${token}    Content-Type=application/json
+    ${response}=    PUT On Session    cinema_api    /auth/profile    json=${payload}    headers=${headers}    expected_status=any
+    Should Be Equal As Strings    ${response.status_code}    ${expected_status_code}
+    Dictionary Should Contain Key    ${response.json()}    message
+    Should Be Equal As Strings    ${response.json()}[message]    ${expected_message}
