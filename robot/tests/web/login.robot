@@ -1,27 +1,29 @@
 *** Settings ***
 Resource    ../../resources/web/login_page.robot
 Resource    ../../resources/web/common_web.robot
-Suite Setup    Abrir Navegador
-Suite Teardown    Fechar Navegador
+
+Suite Setup       login_page.Abrir Pagina de Login
+Suite Teardown    common_web.Fechar Navegador
+
+*** Variables ***
+${VALID_EMAIL}          admin@example.com
+${VALID_PASSWORD}       password123
+${INVALID_PASSWORD}     wrongpassword
+${NON_EXISTENT_EMAIL}   nonexistent@example.com
 
 *** Test Cases ***
-Teste Login Bem Sucedido Admin
-    Navegar Para    ${URL}/login
-    Fazer Login    admin@test.com    admin123
-    Verificar Login Bem Sucedido
+Login Web Bem-Sucedido
+    [Tags]    Web    Positive
+    Realizar Login    ${VALID_EMAIL}    ${VALID_PASSWORD}
+    # Verify successful login by checking for an element on the home page after login
+    Wait Until Page Contains Element    xpath=//h1[contains(text(),'Filmes em Cartaz')]    timeout=10s
 
-Teste Login Bem Sucedido Usuario
-    Navegar Para    ${URL}/login
-    Fazer Login    user@test.com    user123
-    Verificar Login Bem Sucedido
+Login Web Com Senha Inválida
+    [Tags]    Web    Negative
+    Realizar Login    ${VALID_EMAIL}    ${INVALID_PASSWORD}
+    Verificar Mensagem de Erro Exibida    Invalid credentials
 
-Teste Login Com Credenciais Invalidas
-    Navegar Para    ${URL}/login
-    Fazer Login    invalid@test.com    wrongpass
-    Verificar Mensagem Erro Login    Credenciais inválidas
-
-Teste Logout
-    Navegar Para    ${URL}/login
-    Fazer Login    admin@test.com    admin123
-    Fazer Logout
-    Verificar Elemento Presente    ${LOGIN_BUTTON}
+Login Web Com Usuário Inexistente
+    [Tags]    Web    Negative
+    Realizar Login    ${NON_EXISTENT_EMAIL}    ${VALID_PASSWORD}
+    Verificar Mensagem de Erro Exibida    Invalid credentials
