@@ -1,0 +1,27 @@
+# Use a Node.js Alpine image for a smaller footprint
+FROM node:18-alpine
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy package.json and package-lock.json to the working directory
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application code
+COPY . .
+
+# Build the React app for production
+RUN npm run build
+
+# Serve the built app with a simple HTTP server (e.g., serve)
+# Install serve globally
+RUN npm install -g serve
+
+# Expose the port the app runs on
+EXPOSE 5173
+
+# Command to run the application
+CMD ["serve", "-s", "dist", "-l", "5173"]

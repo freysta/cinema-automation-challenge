@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: cinema-backend
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      MONGO_URI: mongodb://mongo:27017/cinema_db
+      JWT_SECRET: your_jwt_secret
+    depends_on:
+      mongo:
+        condition: service_healthy
+    volumes:
+      - ../cinema-challenge-back:/app
+      - /app/node_modules
+    restart: always
+    command: sh -c "./wait-for-it.sh mongo:27017 -- npm start"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: cinema-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_BASE_URL: http://backend:3000/api/v1
+    depends_on:
+      - backend
+    volumes:
+      - ../cinema-challenge-front:/app
+      - /app/node_modules
+    restart: always
+
+  mongo:
+    image: mongo:latest
+    container_name: cinema-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: always
+
+volumes:
+  mongo_data:
