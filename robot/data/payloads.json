@@ -1,32 +1,25 @@
 {
-	"user_admin": {
-		"email": "admin@test.com",
-		"password": "admin123",
-		"role": "admin"
-	},
-	"user_common": {
-		"email": "user@test.com",
-		"password": "user123",
-		"role": "user"
-	},
-	"movie": {
-		"title": "Filme Teste",
-		"description": "Descrição do filme teste",
-		"duration": 120
-	},
-	"session": {
-		"movieId": 1,
-		"room": "Sala 1",
-		"date": "2023-12-01T20:00:00Z",
-		"availableSeats": 100
-	},
-	"session_full": {
-		"movieId": 1,
-		"room": "Sala 2",
-		"date": "2023-12-01T22:00:00Z",
-		"availableSeats": 0
-	},
-	"ticket": {
-		"sessionId": 1
-	}
+  "auth": {
+    "login_admin": {
+      "email": "admin@example.com",
+      "password": "password123"
+    },
+    "register_user": {
+      "name": "",
+      "email": "",
+      "password": ""
+    }
+  },
+  "movies": {
+    "create_movie_valid": {
+      "title": "",
+      "synopsis": "",
+      "director": "",
+      "genres": ["Action"],
+      "duration": 120,
+      "classification": "PG-13",
+      "poster": "",
+      "releaseDate": "2023-01-01T00:00:00.000Z"
+    }
+  }
 }
