@@ -1,0 +1,9 @@
+# Framework Principal de Automação
+robotframework
+
+# Biblioteca para Testes de API (Backend)
+robotframework-requests
+robotframework-jsonlibrary
+
+# Biblioteca para Testes E2E (Frontend/Web) 
+robotframework-browser

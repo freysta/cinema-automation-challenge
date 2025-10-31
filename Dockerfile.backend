@@ -11,7 +11,7 @@ COPY cinema-challenge-back/package*.json ./
 RUN npm install
 
 COPY cinema-challenge-back ./
-COPY cinema-automation-challenge/wait-for-it.sh /usr/local/bin/wait-for-it.sh
+COPY cinema-test-suite/wait-for-it.sh /usr/local/bin/wait-for-it.sh
 RUN chmod +x /usr/local/bin/wait-for-it.sh
 
 # Expose the port the app runs on

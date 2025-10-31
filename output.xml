@@ -1,0 +1,861 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 6.1.1 (Python 3.9.6 on darwin)" generated="20251031 13:13:49.470" rpa="false" schemaversion="4">
+<suite id="s1" name="Robot-Tests" source="/Users/admin/Documents/Compass/Challenge-Final/cinema-test-suite/robot-tests">
+<suite id="s1-s1" name="Api-Tests" source="/Users/admin/Documents/Compass/Challenge-Final/cinema-test-suite/robot-tests/api-tests">
+<suite id="s1-s1-s1" name="Admin Security Tests" source="/Users/admin/Documents/Compass/Challenge-Final/cinema-test-suite/robot-tests/api-tests/admin_security_tests.robot">
+<test id="s1-s1-s1-t1" name="Criar Novo Filme como Admin" line="8">
+<kw name="Conectar à API" library="service-objects" type="SETUP">
+<doc>Cria uma sessão HTTP persistente chamada 'cinema_api' com o URL Base.</doc>
+<kw name="Create Session" library="RequestsLibrary">
+<arg>cinema_api</arg>
+<arg>${BASE_URL_API}</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<msg timestamp="20251031 13:13:49.761" level="INFO">Creating Session using : alias=cinema_api, url=http://localhost:3000/api/v1, headers={},                     cookies={}, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" starttime="20251031 13:13:49.760" endtime="20251031 13:13:49.761"/>
+</kw>
+<status status="PASS" starttime="20251031 13:13:49.760" endtime="20251031 13:13:49.761"/>
+</kw>
+<kw name="Garantir Que Usuário Existe" library="service-objects">
+<arg>${NOME_ADMIN}</arg>
+<arg>${EMAIL_ADMIN}</arg>
+<arg>${SENHA_ADMIN}</arg>
+<doc>Registra um usuário se ele não existir ainda</doc>
+<kw name="Tentar Registrar Usuário" library="service-objects">
+<var>${response}</var>
+<arg>${nome}</arg>
+<arg>${email}</arg>
+<arg>${senha}</arg>
+<doc>Tenta registrar usuário aceitando tanto sucesso quanto erro</doc>
+<kw name="Create Dictionary" library="BuiltIn">
+<var>${body}</var>
+<arg>name=${nome}</arg>
+<arg>email=${email}</arg>
+<arg>password=${senha}</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<msg timestamp="20251031 13:13:49.762" level="INFO">${body} = {'name': 'Admin User', 'email': 'admin@example.com', 'password': 'admin123'}</msg>
+<status status="PASS" starttime="20251031 13:13:49.762" endtime="20251031 13:13:49.762"/>
+</kw>
+<kw name="POST On Session" library="RequestsLibrary">
+<var>${response}</var>
+<arg>cinema_api</arg>
+<arg>${AUTH_ENDPOINT}/register</arg>
+<arg>json=${body}</arg>
+<arg>headers=${HEADERS_NO_AUTH}</arg>
+<arg>expected_status=any</arg>
+<doc>Sends a POST request on a previously created HTTP Session.</doc>
+<msg timestamp="20251031 13:14:19.800" level="INFO">POST Request : url=http://localhost:3000/api/v1/auth/register 
+ path_url=/api/v1/auth/register 
+ headers={'User-Agent': 'python-requests/2.32.5', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json', 'Content-Length': '76'} 
+ body=b'{"name": "Admin User", "email": "admin@example.com", "password": "admin123"}' 
+ </msg>
+<msg timestamp="20251031 13:14:19.801" level="INFO">POST Response : url=http://localhost:3000/api/v1/auth/register 
+ status=500, reason=Internal Server Error 
+ headers={'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '1041', 'ETag': 'W/"411-7zTfTBOLFl/ZSl8SJaxFyW2jZM4"', 'Date': 'Fri, 31 Oct 2025 17:14:19 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body={"success":false,"message":"getaddrinfo EIO mongo","stack":"MongoServerSelectionError: getaddrinfo EIO mongo\n    at Topology.selectServer (/app/node_modules/mongodb/lib/sdam/topology.js:321:38)\n    at async tryOperation (/app/node_modules/mongodb/lib/operations/execute_operation.js:145:18)\n    at async executeOperation (/app/node_modules/mongodb/lib/operations/execute_operation.js:75:16)\n    at async FindCursor._initialize (/app/node_modules/mongodb/lib/cursor/find_cursor.js:61:26)\n    at async FindCursor.cursorInit (/app/node_modules/mongodb/lib/cursor/abstract_cursor.js:633:27)\n    at async FindCursor.fetchBatch (/app/node_modules/mongodb/lib/cursor/abstract_cursor.js:667:13)\n    at async FindCursor.next (/app/node_modules/mongodb/lib/cursor/abstract_cursor.js:347:17)\n    at async Collection.findOne (/app/node_modules/mongodb/lib/collection.js:277:21)\n    at async model.Query._findOne (/app/node_modules/mongoose/lib/query.js:2687:15)\n    at async model.Query.exec (/app/node_modules/mongoose/lib/query.js:4604:63)"} 
+ </msg>
+<msg timestamp="20251031 13:14:19.802" level="INFO">${response} = &lt;Response [500]&gt;</msg>
+<status status="PASS" starttime="20251031 13:13:49.762" endtime="20251031 13:14:19.802"/>
+</kw>
+<return>
+<value>${response}</value>
+<status status="PASS" starttime="20251031 13:14:19.803" endtime="20251031 13:14:19.804"/>
+</return>
+<msg timestamp="20251031 13:14:19.805" level="INFO">${response} = &lt;Response [500]&gt;</msg>
+<status status="PASS" starttime="20251031 13:13:49.761" endtime="20251031 13:14:19.805"/>
+</kw>
+<kw name="Should Be True" library="BuiltIn">
+<arg>${response.status_code} == 201 or ${response.status_code} == 400</arg>
+<doc>Fails if the given condition is not true.</doc>
+<msg timestamp="20251031 13:14:19.808" level="FAIL">'500 == 201 or 500 == 400' should be true.</msg>
+<status status="FAIL" starttime="20251031 13:14:19.805" endtime="20251031 13:14:19.808"/>
+</kw>
+<status status="FAIL" starttime="20251031 13:13:49.761" endtime="20251031 13:14:19.808"/>
+</kw>
+<kw name="Fazer Login" library="service-objects">
+<var>${login_response}</var>
+<arg>${EMAIL_ADMIN}</arg>
+<arg>${SENHA_ADMIN}</arg>
+<doc>Realiza login com email e senha</doc>
+<status status="NOT RUN" starttime="20251031 13:14:19.808" endtime="20251031 13:14:19.809"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${token}</var>
+<arg>${login_response.json()['data']['token']}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:19.809" endtime="20251031 13:14:19.809"/>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<var>&amp;{movie_data}</var>
+<arg>title=Filme Admin Teste 10</arg>
+<arg>synopsis=Sinopse do filme criado pelo admin</arg>
+<arg>director=Diretor Teste</arg>
+<arg>genres=["Action", "Adventure"]</arg>
+<arg>duration=120</arg>
+<arg>classification=PG-13</arg>
+<arg>poster=admin_test_movie.jpg</arg>
+<arg>releaseDate=2024-12-31</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:19.809" endtime="20251031 13:14:19.809"/>
+</kw>
+<kw name="Criar Filme Como Admin" library="service-objects">
+<var>${response}</var>
+<arg>${token}</arg>
+<arg>${movie_data}</arg>
+<doc>Cria um filme como admin e retorna a resposta completa</doc>
+<status status="NOT RUN" starttime="20251031 13:14:19.809" endtime="20251031 13:14:19.810"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${response.status_code}</arg>
+<arg>201</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:19.810" endtime="20251031 13:14:19.810"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${response_json}</var>
+<arg>${response.json()}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:19.810" endtime="20251031 13:14:19.810"/>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<arg>${response_json['success']}</arg>
+<arg>${True}</arg>
+<doc>Fails if the given objects are unequal.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:19.811" endtime="20251031 13:14:19.811"/>
+</kw>
+<kw name="Dictionary Should Contain Key" library="Collections">
+<arg>${response_json}</arg>
+<arg>data</arg>
+<doc>Fails if ``key`` is not found from ``dictionary``.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:19.811" endtime="20251031 13:14:19.811"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${movie}</var>
+<arg>${response_json['data']}</arg>
+<doc>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   Fails if the given condition is not true.</doc>
+<status status="NOT RUN" starttime="20251031 13:13:21.731" endtime="20251031 13:13:21.731"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${movie_id}</var>
+<arg>${movies[0]['_id']}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20251031 13:13:21.731" endtime="20251031 13:13:21.731"/>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<var>&amp;{update_data}</var>
+<arg>title=Filme Atualizado Admin</arg>
+<arg>director=Diretor Atualizado</arg>
+<arg>duration=110</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<status status="NOT RUN" starttime="20251031 13:13:21.732" endtime="20251031 13:13:21.732"/>
+</kw>
+<kw name="Atualizar Filme Como Admin" library="service-objects">
+<var>${update_response}</var>
+<arg>${token}</arg>
+<arg>${movie_id}</arg>
+<arg>${update_data}</arg>
+<doc>Atualiza um filme como admin</doc>
+<status status="NOT RUN" starttime="20251031 13:13:21.732" endtime="20251031 13:13:21.732"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${update_response.status_code}</arg>
+<arg>200</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20251031 13:13:21.732" endtime="20251031 13:13:21.732"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${updated_movie}</var>
+<arg>${update_response.json()['data']}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20251031 13:13:21.732" endtime="20251031 13:13:21.733"/>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<arg>${updated_movie['title']}</arg>
+<arg>Filme Atualizado Admin</arg>
+<doc>Fails if the given objects are unequal.</doc>
+<status status="NOT RUN" starttime="20251031 13:13:21.733" endtime="20251031 13:13:21.733"/>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<arg>${updated_movie['director']}</arg>
+<arg>Diretor Atualizado</arg>
+<doc>Fails if the given objects are unequal.</doc>
+<status status="NOT RUN" starttime="20251031 13:13:21.733" endtime="20251031 13:13:21.733"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>Atualização de filme existente: SUCESSO</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20251031 13:13:21.733" endtime="20251031 13:13:21.733"/>
+</kw>
+<doc>CRUD Update: Buscar e Atualizar um filme existente como Admin</doc>
+<status status="FAIL" starttime="20251031 13:12:51.661" endtime="20251031 13:13:21.733">'500 == 201 or 500 == 400' should be true.</status>
+</test>
+<test id="s1-s1-s1-t3" name="Deletar Filme como Admin" line="72">
+<kw name="Conectar à API" library="service-objects" type="SETUP">
+<doc>Cria uma sessão HTTP persistente chamada 'cinema_api' com o URL Base.</doc>
+<kw name="Create Session" library="RequestsLibrary">
+<arg>cinema_api</arg>
+<arg>${BASE_URL_API}</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<msg timestamp="20251031 13:13:21.798" level="INFO">Creating Session using : alias=cinema_api, url=http://localhost:3000/api/v1, headers={},                     cookies={}, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" starttime="20251031 13:13:21.798" endtime="20251031 13:13:21.798"/>
+</kw>
+<status status="PASS" starttime="20251031 13:13:21.797" endtime="20251031 13:13:21.798"/>
+</kw>
+<kw name="Garantir Que Usuário Existe" library="service-objects">
+<arg>${NOME_ADMIN}</arg>
+<arg>${EMAIL_ADMIN}</arg>
+<arg>${SENHA_ADMIN}</arg>
+<doc>Registra um usuário se ele não existir ainda</doc>
+<kw name="Tentar Registrar Usuário" library="service-objects">
+<var>${response}</var>
+<arg>${nome}</arg>
+<arg>${email}</arg>
+<arg>${senha}</arg>
+<doc>Tenta registrar usuário aceitando tanto sucesso quanto erro</doc>
+<kw name="Create Dictionary" library="BuiltIn">
+<var>${body}</var>
+<arg>name=${nome}</arg>
+<arg>email=${email}</arg>
+<arg>password=${senha}</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<msg timestamp="20251031 13:13:21.801" level="INFO">${body} = {'name': 'Admin User', 'email': 'admin@example.com', 'password': 'admin123'}</msg>
+<status status="PASS" starttime="20251031 13:13:21.801" endtime="20251031 13:13:21.801"/>
+</kw>
+<kw name="POST On Session" library="RequestsLibrary">
+<var>${response}</var>
+<arg>cinema_api</arg>
+<arg>${AUTH_ENDPOINT}/register</arg>
+<arg>json=${body}</arg>
+<arg>headers=${HEADERS_NO_AUTH}</arg>
+<arg>expected_status=any</arg>
+<doc>Sends a POST request on a previously created HTTP Session.</doc>
+<msg timestamp="20251031 13:13:51.856" level="INFO">POST Request : url=http://localhost:3000/api/v1/auth/register 
+ path_url=/api/v1/auth/register 
+ headers={'User-Agent': 'python-requests/2.32.5', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json', 'Content-Length': '76'} 
+ body=b'{"name": "Admin User", "email": "admin@example.com", "password": "admin123"}' 
+ </msg>
+<msg timestamp="20251031 13:13:51.856" level="INFO">POST Response : url=http://localhost:3000/api/v1/auth/register 
+ status=500, reason=Internal Server Error 
+ headers={'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '1041', 'ETag': 'W/"411-7zTfTBOLFl/ZSl8SJaxFyW2jZM4"', 'Date': 'Fri, 31 Oct 2025 17:13:51 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body={"success":false,"message":"getaddrinfo EIO mongo","stack":"MongoServerSelectionError: getaddrinfo EIO mongo\n    at Topology.selectServer (/app/node_modules/mongodb/lib/sdam/topology.js:321:38)\n    at async tryOperation (/app/node_modules/mongodb/lib/operations/execute_operation.js:145:18)\n    at async executeOperation (/app/node_modules/mongodb/lib/operations/execute_operation.js:75:16)\n    at async FindCursor._initialize (/app/node_modules/mongodb/lib/cursor/find_cursor.js:61:26)\n    at async FindCursor.cursorInit (/app/node_modules/mongodb/lib/cursor/abstract_cursor.js:633:27)\n    at async FindCursor.fetchBatch (/app/node_modules/mongodb/lib/cursor/abstract_cursor.js:667:13)\n    at async FindCursor.next (/app/node_modules/mongodb/lib/cursor/abstract_cursor.js:347:17)\n    at async Collection.findOne (/app/node_modules/mongodb/lib/collection.js:277:21)\n    at async model.Query._findOne (/app/node_modules/mongoose/lib/query.js:2687:15)\n    at async model.Query.exec (/app/node_modules/mongoose/lib/query.js:4604:63)"} 
+ </msg>
+<msg timestamp="20251031 13:13:51.857" level="INFO">${response} = &lt;Response [500]&gt;</msg>
+<status status="PASS" starttime="20251031 13:13:21.801" endtime="20251031 13:13:51.857"/>
+</kw>
+<return>
+<value>${response}</value>
+<status status="PASS" starttime="20251031 13:13:51.857" endtime="20251031 13:13:51.858"/>
+</return>
+<msg timestamp="20251031 13:13:51.858" level="INFO">${response} = &lt;Response [500]&gt;</msg>
+<status status="PASS" starttime="20251031 13:13:21.800" endtime="20251031 13:13:51.858"/>
+</kw>
+<kw name="Should Be True" library="BuiltIn">
+<arg>${response.status_code} == 201 or ${response.status_code} == 400</arg>
+<doc>Fails if the given condition is not true.</doc>
+<msg timestamp="20251031 13:13:51.860" level="FAIL">'500 == 201 or 500 == 400' should be true.</msg>
+<status status="FAIL" starttime="20251031 13:13:51.858" endtime="20251031 13:13:51.860"/>
+</kw>
+<status status="FAIL" starttime="20251031 13:13:21.799" endtime="20251031 13:13:51.860"/>
+</kw>
+<kw name="Fazer Login" library="service-objects">
+<var>${login_response}</var>
+<arg>${EMAIL_ADMIN}</arg>
+<arg>${SENHA_ADMIN}</arg>
+<doc>Realiza login com email e senha</doc>
+<status status="NOT RUN" starttime="20251031 13:13:51.860" endtime="20251031 13:13:51.861"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${token}</var>
+<arg>${login_response.json()['data']['token']}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20251031 13:13:51.861" endtime="20251031 13:13:51.861"/>
+</kw>
+<kw name="Buscar Lista de Filmes" library="service-objects">
+<var>${movies_response}</var>
+<arg>${token}</arg>
+<doc>Busca lista de filmes com token de autenticação</doc>
+<status status="NOT RUN" starttime="20251031 13:13:51.861" endtime="20251031 13:13:51.861"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${movies_response.status_code}</arg>
+<arg>200</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20251031 13:13:51.861" endtime="20251031 13:13:51.861"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${movies}</var>
+<arg>${movies_response.json()['data']}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20251031 13:13:51.861" endtime="20251031 13:13:51.862"/>
+</kw>
+<kw name="Should Be True" library="BuiltIn">
+<arg>len($movies) &gt; 0</arg>
+<arg>msg=Nenhum filme disponível para teste</arg>
+<doc>Fails if the given condition is not true.</doc>
+<status status="NOT RUN" starttime="20251031 13:13:51.862" endtime="20251031 13:13:51.862"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${movie_id}</var>
+<arg>${movies[0]['_id']}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20251031 13:13:51.862" endtime="20251031 13:13:51.862"/>
+</kw>
+<kw name="Deletar Filme Como Admin" library="service-objects">
+<var>${delete_response}</var>
+<arg>${token}</arg>
+<arg>${movie_id}</arg>
+<doc>Deleta um filme como admin</doc>
+<status status="NOT RUN" starttime="20251031 13:13:51.862" endtime="20251031 13:13:51.862"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${delete_response.status_code}</arg>
+<arg>200</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20251031 13:13:51.862" endtime="20251031 13:13:51.862"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${delete_json}</var>
+<arg>${delete_response.json()}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20251031 13:13:51.863" endtime="20251031 13:13:51.863"/>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<arg>${delete_json['success']}</arg>
+<arg>${True}</arg>
+<doc>Fails if the given objects are unequal.</doc>
+<status status="NOT RUN" starttime="20251031 13:13:51.863" endtime="20251031 13:13:51.863"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>Deleção de filme existente: SUCESSO</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20251031 13:13:51.863" endtime="20251031 13:13:51.863"/>
+</kw>
+<doc>CRUD Delete: Buscar e Deletar um filme existente como Admin</doc>
+<status status="FAIL" starttime="20251031 13:13:21.794" endtime="20251031 13:13:51.863">'500 == 201 or 500 == 400' should be true.</status>
+</test>
+<test id="s1-s1-s1-t4" name="Criar Sessao como Admin" line="97">
+<kw name="Conectar à API" library="service-objects" type="SETUP">
+<doc>Cria uma sessão HTTP persistente chamada 'cinema_api' com o URL Base.</doc>
+<kw name="Create Session" library="RequestsLibrary">
+<arg>cinema_api</arg>
+<arg>${BASE_URL_API}</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<msg timestamp="20251031 13:13:51.876" level="INFO">Creating Session using : alias=cinema_api, url=http://localhost:3000/api/v1, headers={},                     cookies={}, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" starttime="20251031 13:13:51.876" endtime="20251031 13:13:51.876"/>
+</kw>
+<status status="PASS" starttime="20251031 13:13:51.875" endtime="20251031 13:13:51.876"/>
+</kw>
+<kw name="Garantir Que Usuário Existe" library="service-objects">
+<arg>${NOME_ADMIN}</arg>
+<arg>${EMAIL_ADMIN}</arg>
+<arg>${SENHA_ADMIN}</arg>
+<doc>Registra um usuário se ele não existir ainda</doc>
+<kw name="Tentar Registrar Usuário" library="service-objects">
+<var>${response}</var>
+<arg>${nome}</arg>
+<arg>${email}</arg>
+<arg>${senha}</arg>
+<doc>Tenta registrar usuário aceitando tanto sucesso quanto erro</doc>
+<kw name="Create Dictionary" library="BuiltIn">
+<var>${body}</var>
+<arg>name=${nome}</arg>
+<arg>email=${email}</arg>
+<arg>password=${senha}</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<msg timestamp="20251031 13:13:51.877" level="INFO">${body} = {'name': 'Admin User', 'email': 'admin@example.com', 'password': 'admin123'}</msg>
+<status status="PASS" starttime="20251031 13:13:51.877" endtime="20251031 13:13:51.877"/>
+</kw>
+<kw name="POST On Session" library="RequestsLibrary">
+<var>${response}</var>
+<arg>cinema_api</arg>
+<arg>${AUTH_ENDPOINT}/register</arg>
+<arg>json=${body}</arg>
+<arg>headers=${HEADERS_NO_AUTH}</arg>
+<arg>expected_status=any</arg>
+<doc>Sends a POST request on a previously created HTTP Session.</doc>
+<msg timestamp="20251031 13:14:21.890" level="INFO">POST Request : url=http://localhost:3000/api/v1/auth/register 
+ path_url=/api/v1/auth/register 
+ headers={'User-Agent': 'python-requests/2.32.5', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json', 'Content-Length': '76'} 
+ body=b'{"name": "Admin User", "email": "admin@example.com", "password": "admin123"}' 
+ </msg>
+<msg timestamp="20251031 13:14:21.890" level="INFO">POST Response : url=http://localhost:3000/api/v1/auth/register 
+ status=500, reason=Internal Server Error 
+ headers={'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '1041', 'ETag': 'W/"411-7zTfTBOLFl/ZSl8SJaxFyW2jZM4"', 'Date': 'Fri, 31 Oct 2025 17:14:21 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body={"success":false,"message":"getaddrinfo EIO mongo","stack":"MongoServerSelectionError: getaddrinfo EIO mongo\n    at Topology.selectServer (/app/node_modules/mongodb/lib/sdam/topology.js:321:38)\n    at async tryOperation (/app/node_modules/mongodb/lib/operations/execute_operation.js:145:18)\n    at async executeOperation (/app/node_modules/mongodb/lib/operations/execute_operation.js:75:16)\n    at async FindCursor._initialize (/app/node_modules/mongodb/lib/cursor/find_cursor.js:61:26)\n    at async FindCursor.cursorInit (/app/node_modules/mongodb/lib/cursor/abstract_cursor.js:633:27)\n    at async FindCursor.fetchBatch (/app/node_modules/mongodb/lib/cursor/abstract_cursor.js:667:13)\n    at async FindCursor.next (/app/node_modules/mongodb/lib/cursor/abstract_cursor.js:347:17)\n    at async Collection.findOne (/app/node_modules/mongodb/lib/collection.js:277:21)\n    at async model.Query._findOne (/app/node_modules/mongoose/lib/query.js:2687:15)\n    at async model.Query.exec (/app/node_modules/mongoose/lib/query.js:4604:63)"} 
+ </msg>
+<msg timestamp="20251031 13:14:21.891" level="INFO">${response} = &lt;Response [500]&gt;</msg>
+<status status="PASS" starttime="20251031 13:13:51.878" endtime="20251031 13:14:21.891"/>
+</kw>
+<return>
+<value>${response}</value>
+<status status="PASS" starttime="20251031 13:14:21.891" endtime="20251031 13:14:21.892"/>
+</return>
+<msg timestamp="20251031 13:14:21.892" level="INFO">${response} = &lt;Response [500]&gt;</msg>
+<status status="PASS" starttime="20251031 13:13:51.877" endtime="20251031 13:14:21.892"/>
+</kw>
+<kw name="Should Be True" library="BuiltIn">
+<arg>${response.status_code} == 201 or ${response.status_code} == 400</arg>
+<doc>Fails if the given condition is not true.</doc>
+<msg timestamp="20251031 13:14:21.894" level="FAIL">'500 == 201 or 500 == 400' should be true.</msg>
+<status status="FAIL" starttime="20251031 13:14:21.892" endtime="20251031 13:14:21.894"/>
+</kw>
+<status status="FAIL" starttime="20251031 13:13:51.876" endtime="20251031 13:14:21.894"/>
+</kw>
+<kw name="Fazer Login" library="service-objects">
+<var>${login_response}</var>
+<arg>${EMAIL_ADMIN}</arg>
+<arg>${SENHA_ADMIN}</arg>
+<doc>Realiza login com email e senha</doc>
+<status status="NOT RUN" starttime="20251031 13:14:21.894" endtime="20251031 13:14:21.895"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${token}</var>
+<arg>${login_response.json()['data']['token']}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:21.895" endtime="20251031 13:14:21.896"/>
+</kw>
+<kw name="Buscar Lista de Filmes" library="service-objects">
+<var>${movies_response}</var>
+<arg>${token}</arg>
+<doc>Busca lista de filmes com token de autenticação</doc>
+<status status="NOT RUN" starttime="20251031 13:14:21.896" endtime="20251031 13:14:21.896"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${movies_response.status_code}</arg>
+<arg>200</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:21.896" endtime="20251031 13:14:21.896"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${movies}</var>
+<arg>${movies_response.json()['data']}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:21.896" endtime="20251031 13:14:21.897"/>
+</kw>
+<kw name="Should Be True" library="BuiltIn">
+<arg>len($movies) &gt; 0</arg>
+<arg>msg=Nenhum filme disponível</arg>
+<doc>Fails if the given condition is not true.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:21.897" endtime="20251031 13:14:21.897"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${movie_id}</var>
+<arg>${movies[0]['_id']}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:21.897" endtime="20251031 13:14:21.897"/>
+</kw>
+<kw name="Buscar Lista de Teatros" library="service-objects">
+<var>${theaters_response}</var>
+<doc>Busca lista de teatros sem autenticação</doc>
+<status status="NOT RUN" starttime="20251031 13:14:21.897" endtime="20251031 13:14:21.897"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${theaters_response.status_code}</arg>
+<arg>200</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:21.898" endtime="20251031 13:14:21.898"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${theaters}</var>
+<arg>${theaters_response.json()['data']}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:21.898" endtime="20251031 13:14:21.898"/>
+</kw>
+<kw name="Should Be True" library="BuiltIn">
+<arg>len($theaters) &gt; 0</arg>
+<arg>msg=Nenhum teatro disponível</arg>
+<doc>Fails if the given condition is not true.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:21.898" endtime="20251031 13:14:21.898"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${theater_id}</var>
+<arg>${theaters[0]['_id']}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:21.898" endtime="20251031 13:14:21.898"/>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<var>&amp;{session_data}</var>
+<arg>movie=${movie_id}</arg>
+<arg>theater=${theater_id}</arg>
+<arg>datetime=2025-11-11T20:00:00.000Z</arg>
+<arg>fullPrice=25.00</arg>
+<arg>halfPrice=12.50</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:21.899" endtime="20251031 13:14:21.899"/>
+</kw>
+<kw name="Criar Sessão Como Admin" library="service-objects">
+<var>${response}</var>
+<arg>${token}</arg>
+<arg>${session_data}</arg>
+<doc>Cria uma sessão como admin</doc>
+<status status="NOT RUN" starttime="20251031 13:14:21.899" endtime="20251031 13:14:21.899"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${response.status_code}</arg>
+<arg>201</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:21.899" endtime="20251031 13:14:21.899"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${response_json}</var>
+<arg>${response.json()}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:21.900" endtime="20251031 13:14:21.900"/>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<arg>${response_json['success']}</arg>
+<arg>${True}</arg>
+<doc>Fails if the given objects are unequal.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:21.900" endtime="20251031 13:14:21.900"/>
+</kw>
+<kw name="Dictionary Should Contain Key" library="Collections">
+<arg>${response_json}</arg>
+<arg>data</arg>
+<doc>Fails if ``key`` is not found from ``dictionary``.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:21.900" endtime="20251031 13:14:21.900"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${session}</var>
+<arg>${response_json['data']}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:21.900" endtime="20251031 13:14:21.900"/>
+</kw>
+<kw name="Dictionary Should Contain Key" library="Collections">
+<arg>${session}</arg>
+<arg>_id</arg>
+<doc>Fails if ``key`` is not found from ``dictionary``.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:21.900" endtime="20251031 13:14:21.900"/>
+</kw>
+<kw name="Dictionary Should Contain Key" library="Collections">
+<arg>${session}</arg>
+<arg>movie</arg>
+<doc>Fails if ``key`` is not found from ``dictionary``.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:21.900" endtime="20251031 13:14:21.901"/>
+</kw>
+<kw name="Dictionary Should Contain Key" library="Collections">
+<arg>${session}</arg>
+<arg>theater</arg>
+<doc>Fails if ``key`` is not found from ``dictionary``.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:21.901" endtime="20251031 13:14:21.901"/>
+</kw>
+<kw name="Dictionary Should Contain Key" library="Collections">
+<arg>${session}</arg>
+<arg>datetime</arg>
+<doc>Fails if ``key`` is not found from ``dictionary``.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:21.901" endtime="20251031 13:14:21.901"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>Criação de sessão como admin: SUCESSO</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:21.901" endtime="20251031 13:14:21.901"/>
+</kw>
+<doc>CRUD: Criar Sessão (POST /sessions) vinculada a um Filme e Teatro existentes</doc>
+<status status="FAIL" starttime="20251031 13:13:51.873" endtime="20251031 13:14:21.901">'500 == 201 or 500 == 400' should be true.</status>
+</test>
+<test id="s1-s1-s1-t5" name="Listar Usuarios como Admin" line="144">
+<kw name="Conectar à API" library="service-objects" type="SETUP">
+<doc>Cria uma sessão HTTP persistente chamada 'cinema_api' com o URL Base.</doc>
+<kw name="Create Session" library="RequestsLibrary">
+<arg>cinema_api</arg>
+<arg>${BASE_URL_API}</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<msg timestamp="20251031 13:14:21.913" level="INFO">Creating Session using : alias=cinema_api, url=http://localhost:3000/api/v1, headers={},                     cookies={}, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" starttime="20251031 13:14:21.913" endtime="20251031 13:14:21.913"/>
+</kw>
+<status status="PASS" starttime="20251031 13:14:21.912" endtime="20251031 13:14:21.913"/>
+</kw>
+<kw name="Garantir Que Usuário Existe" library="service-objects">
+<arg>${NOME_ADMIN}</arg>
+<arg>${EMAIL_ADMIN}</arg>
+<arg>${SENHA_ADMIN}</arg>
+<doc>Registra um usuário se ele não existir ainda</doc>
+<kw name="Tentar Registrar Usuário" library="service-objects">
+<var>${response}</var>
+<arg>${nome}</arg>
+<arg>${email}</arg>
+<arg>${senha}</arg>
+<doc>Tenta registrar usuário aceitando tanto sucesso quanto erro</doc>
+<kw name="Create Dictionary" library="BuiltIn">
+<var>${body}</var>
+<arg>name=${nome}</arg>
+<arg>email=${email}</arg>
+<arg>password=${senha}</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<msg timestamp="20251031 13:14:21.914" level="INFO">${body} = {'name': 'Admin User', 'email': 'admin@example.com', 'password': 'admin123'}</msg>
+<status status="PASS" starttime="20251031 13:14:21.914" endtime="20251031 13:14:21.914"/>
+</kw>
+<kw name="POST On Session" library="RequestsLibrary">
+<var>${response}</var>
+<arg>cinema_api</arg>
+<arg>${AUTH_ENDPOINT}/register</arg>
+<arg>json=${body}</arg>
+<arg>headers=${HEADERS_NO_AUTH}</arg>
+<arg>expected_status=any</arg>
+<doc>Sends a POST request on a previously created HTTP Session.</doc>
+<msg timestamp="20251031 13:14:51.931" level="INFO">POST Request : url=http://localhost:3000/api/v1/auth/register 
+ path_url=/api/v1/auth/register 
+ headers={'User-Agent': 'python-requests/2.32.5', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json', 'Content-Length': '76'} 
+ body=b'{"name": "Admin User", "email": "admin@example.com", "password": "admin123"}' 
+ </msg>
+<msg timestamp="20251031 13:14:51.931" level="INFO">POST Response : url=http://localhost:3000/api/v1/auth/register 
+ status=500, reason=Internal Server Error 
+ headers={'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '1041', 'ETag': 'W/"411-7zTfTBOLFl/ZSl8SJaxFyW2jZM4"', 'Date': 'Fri, 31 Oct 2025 17:14:51 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body={"success":false,"message":"getaddrinfo EIO mongo","stack":"MongoServerSelectionError: getaddrinfo EIO mongo\n    at Topology.selectServer (/app/node_modules/mongodb/lib/sdam/topology.js:321:38)\n    at async tryOperation (/app/node_modules/mongodb/lib/operations/execute_operation.js:145:18)\n    at async executeOperation (/app/node_modules/mongodb/lib/operations/execute_operation.js:75:16)\n    at async FindCursor._initialize (/app/node_modules/mongodb/lib/cursor/find_cursor.js:61:26)\n    at async FindCursor.cursorInit (/app/node_modules/mongodb/lib/cursor/abstract_cursor.js:633:27)\n    at async FindCursor.fetchBatch (/app/node_modules/mongodb/lib/cursor/abstract_cursor.js:667:13)\n    at async FindCursor.next (/app/node_modules/mongodb/lib/cursor/abstract_cursor.js:347:17)\n    at async Collection.findOne (/app/node_modules/mongodb/lib/collection.js:277:21)\n    at async model.Query._findOne (/app/node_modules/mongoose/lib/query.js:2687:15)\n    at async model.Query.exec (/app/node_modules/mongoose/lib/query.js:4604:63)"} 
+ </msg>
+<msg timestamp="20251031 13:14:51.932" level="INFO">${response} = &lt;Response [500]&gt;</msg>
+<status status="PASS" starttime="20251031 13:14:21.914" endtime="20251031 13:14:51.933"/>
+</kw>
+<return>
+<value>${response}</value>
+<status status="PASS" starttime="20251031 13:14:51.933" endtime="20251031 13:14:51.934"/>
+</return>
+<msg timestamp="20251031 13:14:51.934" level="INFO">${response} = &lt;Response [500]&gt;</msg>
+<status status="PASS" starttime="20251031 13:14:21.914" endtime="20251031 13:14:51.934"/>
+</kw>
+<kw name="Should Be True" library="BuiltIn">
+<arg>${response.status_code} == 201 or ${response.status_code} == 400</arg>
+<doc>Fails if the given condition is not true.</doc>
+<msg timestamp="20251031 13:14:51.936" level="FAIL">'500 == 201 or 500 == 400' should be true.</msg>
+<status status="FAIL" starttime="20251031 13:14:51.935" endtime="20251031 13:14:51.936"/>
+</kw>
+<status status="FAIL" starttime="20251031 13:14:21.913" endtime="20251031 13:14:51.937"/>
+</kw>
+<kw name="Fazer Login" library="service-objects">
+<var>${login_response}</var>
+<arg>${EMAIL_ADMIN}</arg>
+<arg>${SENHA_ADMIN}</arg>
+<doc>Realiza login com email e senha</doc>
+<status status="NOT RUN" starttime="20251031 13:14:51.937" endtime="20251031 13:14:51.937"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${token}</var>
+<arg>${login_response.json()['data']['token']}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:51.937" endtime="20251031 13:14:51.937"/>
+</kw>
+<kw name="Listar Usuários Como Admin" library="service-objects">
+<var>${response}</var>
+<arg>${token}</arg>
+<doc>Lista usuários como admin</doc>
+<status status="NOT RUN" starttime="20251031 13:14:51.938" endtime="20251031 13:14:51.938"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${response.status_code}</arg>
+<arg>200</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:51.938" endtime="20251031 13:14:51.938"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${response_json}</var>
+<arg>${response.json()}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:51.938" endtime="20251031 13:14:51.938"/>
+</kw>
+<kw name="Should Be Equal" library="BuiltIn">
+<arg>${response_json['success']}</arg>
+<arg>${True}</arg>
+<doc>Fails if the given objects are unequal.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:51.938" endtime="20251031 13:14:51.938"/>
+</kw>
+<kw name="Dictionary Should Contain Key" library="Collections">
+<arg>${response_json}</arg>
+<arg>data</arg>
+<doc>Fails if ``key`` is not found from ``dictionary``.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:51.938" endtime="20251031 13:14:51.938"/>
+</kw>
+<kw name="Dictionary Should Contain Key" library="Collections">
+<arg>${response_json}</arg>
+<arg>count</arg>
+<doc>Fails if ``key`` is not found from ``dictionary``.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:51.938" endtime="20251031 13:14:51.939"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${users}</var>
+<arg>${response_json['data']}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:51.939" endtime="20251031 13:14:51.939"/>
+</kw>
+<kw name="Should Be True" library="BuiltIn">
+<arg>isinstance($users, list)</arg>
+<doc>Fails if the given condition is not true.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:51.939" endtime="20251031 13:14:51.939"/>
+</kw>
+<kw name="Should Be True" library="BuiltIn">
+<arg>${response_json['count']} &gt; 0</arg>
+<doc>Fails if the given condition is not true.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:51.939" endtime="20251031 13:14:51.939"/>
+</kw>
+<if>
+<branch type="IF" condition="len($users) &gt; 0">
+<kw name="Set Variable" library="BuiltIn">
+<var>${primeiro_usuario}</var>
+<arg>${users[0]}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:51.939" endtime="20251031 13:14:51.939"/>
+</kw>
+<kw name="Dictionary Should Contain Key" library="Collections">
+<arg>${primeiro_usuario}</arg>
+<arg>_id</arg>
+<doc>Fails if ``key`` is not found from ``dictionary``.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:51.939" endtime="20251031 13:14:51.940"/>
+</kw>
+<kw name="Dictionary Should Contain Key" library="Collections">
+<arg>${primeiro_usuario}</arg>
+<arg>name</arg>
+<doc>Fails if ``key`` is not found from ``dictionary``.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:51.940" endtime="20251031 13:14:51.940"/>
+</kw>
+<kw name="Dictionary Should Contain Key" library="Collections">
+<arg>${primeiro_usuario}</arg>
+<arg>email</arg>
+<doc>Fails if ``key`` is not found from ``dictionary``.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:51.940" endtime="20251031 13:14:51.940"/>
+</kw>
+<kw name="Dictionary Should Contain Key" library="Collections">
+<arg>${primeiro_usuario}</arg>
+<arg>role</arg>
+<doc>Fails if ``key`` is not found from ``dictionary``.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:51.940" endtime="20251031 13:14:51.940"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>Estrutura do usuário validada: ${primeiro_usuario['name']}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:51.940" endtime="20251031 13:14:51.940"/>
+</kw>
+<status status="NOT RUN" starttime="20251031 13:14:51.939" endtime="20251031 13:14:51.940"/>
+</branch>
+<status status="NOT RUN" starttime="20251031 13:14:51.939" endtime="20251031 13:14:51.940"/>
+</if>
+<kw name="Log" library="BuiltIn">
+<arg>Listagem de usuários como admin: SUCESSO</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20251031 13:14:51.941" endtime="20251031 13:14:51.941"/>
+</kw>
+<doc>CRUD: Listar Usuários (GET /users) como Admin e verificar a lista</doc>
+<status status="FAIL" starttime="20251031 13:14:21.911" endtime="20251031 13:14:51.941">'500 == 201 or 500 == 400' should be true.</status>
+</test>
+<test id="s1-s1-s1-t6" name="Tentar Criar Sessao com Teatro ID Invalido" line="175">
+<kw name="Conectar à API" library="service-objects" type="SETUP">
+<doc>Cria uma sessão HTTP persistente chamada 'cinema_api' com o URL Base.</doc>
+<kw name="Create Session" library="RequestsLibrary">
+<arg>cinema_api</arg>
+<arg>${BASE_URL_API}</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<msg timestamp="20251031 13:14:51.955" level="INFO">Creating Session using : alias=cinema_api, url=http://localhost:3000/api/v1, headers={},                     cookies={}, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" starttime="20251031 13:14:51.954" endtime="20251031 13:14:51.955"/>
+</kw>
+<status status="PASS" starttime="20251031 13:14:51.954" endtime="20251031 13:14:51.955"/>
+</kw>
+<kw name="Garantir Que Usuário Existe" library="service-objects">
+<arg>${NOME_ADMIN}</arg>
+<arg>${EMAIL_ADMIN}</arg>
+<arg>${SENHA_ADMIN}</arg>
+<doc>Registra um usuário se ele não existir ainda</doc>
+<kw name="Tentar Registrar Usuário" library="service-objects">
+<var>${response}</var>
+<arg>${nome}</arg>
+<arg>${email}</arg>
+<arg>${senha}</arg>
+<doc>Tenta registrar usuário aceitando tanto sucesso quanto erro</doc>
+<kw name="Create Dictionary" library="BuiltIn">
+<var>${body}</var>
+<arg>name=${nome}</arg>
+<arg>email=${email}</arg>
+<arg>password=${senha}</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<msg timestamp="20251031 13:14:51.956" level="INFO">${body} = {'name': 'Admin User', 'email': 'admin@example.com', 'password': 'admin123'}</msg>
+<status status="PASS" starttime="20251031 13:14:51.956" endtime="20251031 13:14:51.956"/>
+</kw>
+<kw name="POST On Session" library="RequestsLibrary">
+<var>${response}</var>
+<arg>cinema_api</arg>
+<arg>${AUTH_ENDPOINT}/register</arg>
+<arg>json=${body}</arg>
+<arg>headers=${HEADERS_NO_AUTH}</arg>
+<arg>expected_status=any</arg>
+<doc>Sends a POST request on a previously created HTTP Session.</doc>
+<msg timestamp="20251031 13:15:21.982" level="INFO">POST Request : url=http://localhost:3000/api/v1/auth/register 
+ path_url=/api/v1/auth/register 
+ headers={'User-Agent': 'python-requests/2.32.5', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json', 'Content-Length': '76'} 
+ body=b'{"name": "Admin User", "email": "admin@example.com", "password": "admin123"}' 
+ </msg>
+<msg timestamp="20251031 13:15:21.983" level="INFO">POST Response : url=http://localhost:3000/api/v1/auth/register 
+ status=500, reason=Internal Server Error 
+ headers={'X-Powered-By': 'Express', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '1041', 'ETag': 'W/"411-7zTfTBOLFl/ZSl8SJaxFyW2jZM4"', 'Date': 'Fri, 31 Oct 2025 17:15:22 GMT', 'Connection': 'keep-alive', 'Keep-Alive': 'timeout=5'} 
+ body={"success":false,"message":"getaddrinfo EIO mongo","stack":"MongoServerSelectionError: getaddrinfo EIO mongo\n    at Topology.selectServer (/app/node_modules/mongodb/lib/sdam/topology.js:321:38)\n    at async tryOperation (/app/node_modules/mongodb/lib/operations/execute_operation.js:145:18)\n    at async executeOperation (/app/node_modules/mongodb/lib/operations/execute_operation.js:75:16)\n    at async FindCursor._initialize (/app/node_modules/mongodb/lib/cursor/find_cursor.js:61:26)\n    at async FindCursor.cursorInit (/app/node_modules/mongodb/lib/cursor/abstract_cursor.js:633:27)\n    at async FindCursor.fetchBatch (/app/node_modules/mongodb/lib/cursor/abstract_cursor.js:667:13)\n    at async FindCursor.next (/app/node_modules/mongodb/lib/cursor/abstract_cursor.js:347:17)\n    at async Collection.findOne (/app/node_modules/mongodb/lib/collection.js:277:21)\n    at async model.Query._findOne (/app/node_modules/mongoose/lib/query.js:2687:15)\n    at async model.Query.exec (/app/node_modules/mongoose/lib/query.js:4604:63)"} 
+ </msg>
+<msg timestamp="20251031 13:15:21.985" level="INFO">${response} = &lt;Response [500]&gt;</msg>
+<status status="PASS" starttime="20251031 13:14:51.956" endtime="20251031 13:15:21.985"/>
+</kw>
+<return>
+<value>${response}</value>
+<status status="PASS" starttime="20251031 13:15:21.987" endtime="20251031 13:15:21.988"/>
+</return>
+<msg timestamp="20251031 13:15:21.988" level="INFO">${response} = &lt;Response [500]&gt;</msg>
+<status status="PASS" starttime="20251031 13:14:51.955" endtime="20251031 13:15:21.988"/>
+</kw>
+<kw name="Should Be True" library="BuiltIn">
+<arg>${response.status_code} == 201 or ${response.status_code} == 400</arg>
+<doc>Fails if the given condition is not true.</doc>
+<msg timestamp="20251031 13:15:21.990" level="FAIL">'500 == 201 or 500 == 400' should be true.</msg>
+<status status="FAIL" starttime="20251031 13:15:21.989" endtime="20251031 13:15:21.991"/>
+</kw>
+<status status="FAIL" starttime="20251031 13:14:51.955" endtime="20251031 13:15:21.991"/>
+</kw>
+<kw name="Fazer Login" library="service-objects">
+<var>${login_response}</var>
+<arg>${EMAIL_ADMIN}</arg>
+<arg>${SENHA_ADMIN}</arg>
+<doc>Realiza login com email e senha</doc>
+<status status="NOT RUN" starttime="20251031 13:15:21.991" endtime="20251031 13:15:21.991"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${token}</var>
+<arg>${login_response.json()['data']['token']}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20251031 13:15:21.991" endtime="20251031 13:15:21.992"/>
+</kw>
+<kw name="Buscar Lista de Filmes" library="service-objects">
+<var>${movies_response}</var>
+<arg>${token}</arg>
+<doc>Busca lista de filmes com token de autenticação</doc>
+<status status="NOT RUN" starttime="20251031 13:15:21.992" endtime="20251031 13:15:21.992"/>
+</kw>
+<kw name="Should Be Equal As Integers" library="BuiltIn">
+<arg>${movies_response.status_code}</arg>
+<arg>200</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="NOT RUN" starttime="20251031 13:15:21.992" endtime="20251031 13:15:21.992"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${movies}</var>
+<arg>${movies_response.json()['data']}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20251031 13:15:21.992" endtime="20251031 13:15:21.992"/>
+</kw>
+<kw name="Should Be True" library="BuiltIn">
+<arg>len($movies) &gt; 0</arg>
+<arg>msg=Nenhum filme disponível</arg>
+<doc>Fails if the given condition is not true.</doc>
+<status status="NOT RUN" starttime="20251031 13:15:21.992" endtime="20251031 13:15:21.992"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${movie_id}</var>
+<arg>${movies[0]['_id']}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20251031 13:15:21.993" endtime="20251031 13:15:21.993"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${theater_id_invalido}</var>
+<arg>507f1f77bcf86cd799439011</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20251031 13:15:21.993" endtime="20251031 13:15:21.993"/>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<var>&amp;{session_data}</var>
+<arg>movie=${movie_id}</arg>
+<arg>theater=${theater_id_invalido}</arg>
+<arg>datetime=2024-12-31T20:00:00.000Z</arg>
+<arg>fullPrice=25.00</arg>
+<arg>halfPrice=12.50</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<status status="NOT RUN" starttime="20251031 13:15:21.993" endtime="20251031 13:15:21.993"/>
