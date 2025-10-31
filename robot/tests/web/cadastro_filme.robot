@@ -2,11 +2,15 @@
 Resource    ../../resources/web/admin_page.robot
 Resource    ../../resources/web/login_page.robot
 Resource    ../../resources/web/home_page.robot
-Resource    ../../resources/web/common_web.robot
-Resource    ../../resources/web/common_variables.robot
-Resource    ../../resources/web/common_web_keywords.robot
-Suite Setup    Setup Test Environment
-Suite Teardown    common_web.Fechar Navegador
+Resource    ../../resources/web/base_web.resource
+
+Suite Setup       Setup Testes Frontend
+Suite Teardown    Teardown Testes Frontend
+Test Setup        New Page    ${FRONTEND_BASE_URL}
+
+*** Variables ***
+${VALID_EMAIL}          admin@example.com
+${VALID_PASSWORD}       admin123
 
 *** Test Cases ***
 Teste Cadastro Filme Admin
@@ -20,17 +24,11 @@ Teste Cadastro Filme Admin
     Verificar Mensagem Sucesso    Filme criado com sucesso
 
 Teste Verificar Filme Na Vitrine
-    Navegar Para    ${URL}
+    Go To Home Page
     Verificar Filme Na Lista    Filme Teste Automacao
 
 *** Keywords ***
-Setup Test Environment
-    common_web.Abrir Navegador
-    # Aqui poderia criar dados via API se necessário
-
 Login Admin Web
-    Navegar Para    ${FRONTEND_URL}/login
-    login_page.Realizar Login    admin@example.com    password123
-    login_page.Verificar Login Bem Sucedido
-
-
+    Navegar Para Login
+    Realizar Login    ${VALID_EMAIL}    ${VALID_PASSWORD}
+    Validar Login Bem Sucedido

@@ -1,11 +1,12 @@
 *** Settings ***
 Library    SeleniumLibrary
 Library    String
+Resource    ./common_variables.robot
 
 *** Variables ***
 ${BROWSER}    chrome
-${URL}    http://localhost:3000
-${TIMEOUT}    10s
+${URL}    ${FRONTEND_URL}
+${TIMEOUT}    ${SELENIUM_TIMEOUT}
 
 *** Keywords ***
 Abrir Navegador

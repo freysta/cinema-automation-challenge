@@ -1,0 +1,16 @@
+# Robot Framework
+results/
+.robot/
+__pycache__/
+
+# Python
+venv/
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

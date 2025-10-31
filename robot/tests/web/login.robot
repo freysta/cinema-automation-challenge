@@ -1,9 +1,10 @@
 *** Settings ***
 Resource    ../../resources/web/login_page.robot
-Resource    ../../resources/web/common_web.robot
+Resource    ../../resources/web/base_web.resource
 
-Suite Setup       login_page.Abrir Pagina de Login
-Suite Teardown    common_web.Fechar Navegador
+Suite Setup       Setup Testes Frontend
+Suite Teardown    Teardown Testes Frontend
+Test Setup        New Page    ${FRONTEND_BASE_URL}
 
 *** Variables ***
 ${VALID_EMAIL}          admin@example.com

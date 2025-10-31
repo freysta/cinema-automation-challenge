@@ -1,119 +1,134 @@
-# Plano de Testes v2.0 - Aplicação Cinema (Challenge Final)
+# Plano de Testes - Cinema App
 
 ## 1. Introdução
 
-### 1.1. Propósito
+Este documento detalha o plano de testes para a aplicação Cinema App, cobrindo a automação de testes de API e Web utilizando Robot Framework.
 
-Este documento detalha a estratégia de testes e o escopo de automação para a aplicação "Cinema", como parte do challenge final. O objetivo é validar a funcionalidade, integração, segurança e robustez dos sistemas de Back-end (API) e Front-end (Web) utilizando Robot Framework, aplicando padrões de projeto e boas práticas de engenharia de qualidade.
+## 2. Escopo dos Testes
 
-### 1.2. Aplicação Alvo
+### 2.1. Funcionalidades em Escopo
 
-- **Back-end (API):** `https://github.com/freysta/cinema-challenge-back` (Rodando localmente ou em ambiente de teste)
-- **Front-end (Web):** `https://github.com/juniorschmitz/cinema-challenge-front` (Rodando localmente ou em ambiente de teste)
+- Autenticação (Registro, Login, Logout, Perfil)
+- Gerenciamento de Filmes (Listagem, Detalhes)
+- Gerenciamento de Sessões (Listagem, Detalhes)
+- Reservas (Seleção de Assentos, Checkout, Histórico)
+- Navegação Geral
 
-## 2. Escopo da Validação
+### 2.2. Funcionalidades Fora de Escopo
 
-### 2.1. Em Escopo
+- Testes de performance
+- Testes de segurança (exceto validações básicas de autenticação)
+- Testes de usabilidade exploratórios
 
-A validação cobrirá as seguintes plataformas e módulos de negócio, com foco funcional e de segurança:
+## 3. Estratégia de Testes
 
-- **Plataformas:** Testes de API (Back-end) e Testes de UI (Front-end).
-- **Módulos de Negócio (Baseado na API):**
-  - Autenticação (`/auth/register`, `/auth/login`)
-  - Usuários (`/users`)
-  - Filmes (`/movies`)
-  - Sessões (`/sessions`)
-  - Ingressos (`/tickets`)
+### 3.1. Abordagem
 
-### 2.2. Fora de Escopo
+Será utilizada uma abordagem de testes híbrida, combinando testes de API para validação do backend e testes Web para validação da interface do usuário, com testes End-to-End (E2E) que integram ambos.
 
-Conforme diretrizes do challenge, os seguintes tipos de teste não fazem parte do escopo principal:
+### 3.2. Níveis de Teste
 
-- Testes de Performance em larga escala (Carga, Estresse, Volume).
-- Testes aprofundados de Usabilidade e Acessibilidade.
+- **Testes de API:** Foco na validação dos endpoints do backend, lógica de negócio e persistência de dados.
+- **Testes Web:** Foco na validação da interface do usuário, interações e fluxos de navegação.
+- **Testes E2E:** Validação de jornadas completas do usuário, utilizando a API para pré-condições e pós-condições, e a interface Web para a execução do fluxo principal.
 
-## 3. Estratégia de Automação
+### 3.3. Padrões de Projeto
 
-Seguindo as boas práticas e a pirâmide de testes, a automação será dividida em níveis para otimizar a velocidade de feedback e a manutenibilidade:
+- **Service Objects:** Para encapsular interações com a API.
+- **Page Objects:** Para encapsular interações com elementos da interface Web.
+- **Keywords Reutilizáveis:** Para promover a reusabilidade e manutenibilidade do código.
 
-### 3.1. Nível 1: Testes de API (Back-end) - Foco Principal (~70%)
+## 4. Ferramentas e Tecnologias
 
-Esta camada formará a base da automação, responsável pela validação da lógica de negócio, segurança e integridade dos dados diretamente na API.
+- **Framework de Automação:** Robot Framework
+- **Linguagem de Script:** Python
+- **Bibliotecas Robot:**
+  - `RequestsLibrary` (para testes de API)
+  - `SeleniumLibrary` ou `Browser` (para testes Web)
+  - `FakerLibrary` (para geração de dados de teste)
+  - `JSONLibrary` (para manipulação de JSON)
+- **Controle de Versão:** Git / GitHub
+- **Integração Contínua:** GitHub Actions
 
-- **Foco:**
-  - **Regras de Negócio:** Validação de e-mail duplicado, lógica de compra de ingressos (validação de `availableSeats`, concorrência), regras de permissão (Admin vs User), validações de dados de entrada (campos obrigatórios, tipos, formatos).
-  - **Segurança:** Autenticação (validação de token JWT - válido/inválido/ausente), Autorização (controle de acesso baseado em roles - Admin/User).
-  - **Contrato da API:** Validação de `status codes` HTTP e estrutura/conteúdo das mensagens de erro.
-  - **Robustez:** Testes de idempotência (ex: `DELETE`), validação de tipos de dados inesperados.
-- **Padrão de Projeto:** A interação com a API será encapsulada em `Keywords` de serviço (semelhante ao padrão `ServiceObjects` ou `API Client`), organizadas por módulo de negócio (ex: `auth_service.robot`, `movie_service.robot`) na pasta `resources/api/`. Isso promove a reutilização e isola os detalhes da `RequestsLibrary` dos casos de teste.
+## 5. Ambiente de Testes
 
-### 3.2. Nível 2: Testes de UI (Front-end) - Validação da Interface (~20%)
+- **Backend:** Aplicação Node.js/Express (cinema-backend)
+- **Frontend:** Aplicação React (cinema-frontend)
+- **Banco de Dados:** MongoDB
+- **Navegadores:** Chrome (principal), Firefox (secundário)
 
-Focada na validação da interface do usuário e interações de componentes.
+## 6. Dados de Teste
 
-- **Foco:** Validação de elementos visuais, funcionalidade de formulários (cadastro, login, adição de filme), feedback visual para o usuário (mensagens de erro/sucesso), navegação entre páginas.
-- **Padrão de Projeto:** `PageObjects`. Cada página ou componente reutilizável da interface terá seu próprio arquivo em `resources/web/` (ex: `login_page.robot`, `admin_movies_page.robot`). Estes arquivos conterão os localizadores (seletores CSS/XPath) e as `Keywords` que representam as ações do usuário naquela página específica, utilizando a biblioteca de automação web (`SeleniumLibrary` ou `Browser`).
+- Serão utilizados dados de teste gerados dinamicamente (Faker) e dados pré-definidos em arquivos JSON/Python para cenários específicos.
+- A criação e limpeza de dados serão realizadas via API nos `Suite Setup` e `Suite Teardown` dos testes E2E.
 
-### 3.3. Nível 3: Testes End-to-End (E2E) - Validação dos Fluxos Críticos (~10%)
+## 7. Cenários de Teste (Implementados)
 
-Validará os fluxos de negócio mais importantes do ponto de vista do usuário, integrando Front-end e Back-end.
+### 7.1. Testes de API
 
-- **Foco:** Simulação da jornada completa do usuário em cenários críticos (ex: Compra de Ingresso, Cadastro de Filme por Admin).
-- **Estratégia de Independência:** Para garantir **testes independentes**, será utilizada uma **abordagem híbrida**:
-  - **`Suite Setup` (API):** Criação de dados de pré-condição (usuários Admin/Comum, filme, sessão) via chamadas diretas à API. Isso torna o setup rápido e confiável.
-  - **`Test Case` (UI):** Execução do fluxo do usuário na interface web, utilizando os dados criados no setup.
-  - **`Suite Teardown` (API):** Limpeza dos dados de teste criados (exclusão de usuários, filmes, etc.) via chamadas diretas à API. Isso garante que o ambiente retorne a um estado limpo.
+#### Autenticação (auth.robot)
 
-## 4. Ferramentas e Artefatos
+- **Login Bem-Sucedido**: Valida login com credenciais corretas (US-AUTH-002)
+- **Login Com Senha Inválida**: Valida erro para senha incorreta (US-AUTH-002)
+- **Login Com Usuário Inexistente**: Valida erro para usuário inexistente (US-AUTH-002)
 
-- **Framework:** Robot Framework
-- **Bibliotecas:** `RequestsLibrary`, `SeleniumLibrary` (ou `Browser`), `FakerLibrary` (para dados dinâmicos).
-- **Gestão:** Git, GitHub (com Issues para bugs).
-- **Artefatos:** Plano de Testes (este doc), Mapa Mental, Prompt GenAI, Código de Automação.
-- **Inovação:** Pipeline de CI/CD no GitHub Actions para execução automática dos testes de API.
+#### Filmes (filmes.robot)
 
-## 5. Cenários de Teste Prioritários (Foco Back-end Inicial)
+- **Cadastrar Filme Com Sucesso**: Valida criação de filme com dados válidos (US-MOVIE-001)
+- **Listar Filmes**: Valida obtenção da lista de filmes (US-MOVIE-001)
+- **Tentar Cadastrar Filme Sem Título**: Valida erro para filme sem título obrigatório (US-MOVIE-001)
+- **Tentar Cadastrar Filme Com Duração Inválida**: Valida erro para duração negativa (US-MOVIE-001)
 
-Esta lista detalha os cenários chave a serem implementados, começando pela camada de API.
+#### Reservas (reservations.robot)
 
-### P0 - Críticos (Segurança Core e Lógica de Compra)
+- **Comprar Ingresso Para Sessão Lotada - Fluxo Completo**: Valida reserva em sessão lotada (US-RESERVE-001)
+- **Tentar Compra Concorrente Para Último Assento**: Valida concorrência de reservas (US-RESERVE-001)
+- **Comprar Ingresso Com Múltiplos Assentos e Validar Estoque**: Valida reserva múltipla e decremento de estoque (US-RESERVE-001)
 
-- **[API-AuthN-01]** Tentar acessar rota protegida (ex: `POST /tickets`) sem token. (Esperado: 401 Unauthorized).
-- **[API-AuthN-02]** Tentar acessar rota protegida com token inválido/expirado. (Esperado: 401).
-- **[API-AuthZ-01]** Tentar acessar rota de Admin (ex: `POST /movies`) com token de usuário comum. (Esperado: 403 Forbidden).
-- **[API-Tickets-BUY]** Compra de ingresso bem-sucedida para sessão com assentos disponíveis. (Esperado: 201 Created; `availableSeats` decrementado).
-- **[API-Tickets-LOT]** Tentar comprar ingresso para sessão com `availableSeats` = 0. (Esperado: 400 Bad Request + msg erro "Sem assentos disponíveis").
-- **[API-Tickets-CONC] Teste de Concorrência:** Simular duas chamadas `POST /tickets` para o último assento disponível. (Esperado: Uma 201, a outra 400/409 + msg erro).
+#### Teatros (theaters.robot)
 
-### P1 - Alta (Regras de Negócio e Validação de Dados API)
+- **Cadastrar Teatro Com Token Admin - Fluxo Completo**: Valida criação de teatro por admin (US-SESSION-001)
+- **Listar Teatros**: Valida obtenção da lista de teatros (US-SESSION-001)
+- **Tentar Cadastrar Teatro Com Token User**: Valida erro para usuário não autorizado (US-SESSION-001)
+- **Tentar Cadastrar Teatro Sem Nome**: Valida erro para teatro sem nome obrigatório (US-SESSION-001)
 
-- **[API-Users-REG-OK]** Cadastro de usuário comum bem-sucedido. (Esperado: 201).
-- **[API-Users-REG-ADMIN-OK]** Cadastro de usuário Admin bem-sucedido. (Esperado: 201).
-- **[API-Users-DUP]** Tentar `POST /auth/register` com e-mail já existente. (Esperado: 400 + msg erro "E-mail já cadastrado").
-- **[API-Login-OK]** Login bem-sucedido com credenciais válidas. (Esperado: 200 + token JWT).
-- **[API-Login-FAIL]** Login com senha incorreta. (Esperado: 401 + msg erro).
-- **[API-Movies-CRUD-Admin]** Fluxo CRUD completo para `/movies` com token de Admin. (Esperado: 201, 200, 200).
-- **[API-Sessions-CRUD-Admin]** Fluxo CRUD completo para `/sessions` com token de Admin. (Esperado: 201, 200, 200).
-- **[API-Tickets-MY]** Listar "Meus Ingressos" (`GET /tickets/my-tickets`) com token de usuário comum. (Esperado: 200).
-- **[API-Users-REQ]** Tentar `POST /auth/register` sem campo obrigatório (ex: `email`). (Esperado: 400 + msg erro).
-- **[API-Movies-REQ]** Tentar `POST /movies` sem campo obrigatório (ex: `title`). (Esperado: 400 + msg erro).
-- **[API-Tickets-INV-SESS]** Tentar `POST /tickets` com `sessionId` inexistente. (Esperado: 404/400 + msg erro).
+### 7.2. Testes Web
 
-### P2 - Média (Outras Validações API e Preparação E2E)
+- Navegação para a página de login
+- Preenchimento do formulário de login com sucesso/erro
+- Visualização da lista de filmes na UI
+- Interação com a página de detalhes do filme
 
-- **[API-Movies-GET-Public]** Listar filmes (`GET /movies`) sem token. (Esperado: 200).
-- **[API-Sessions-GET-Public]** Listar sessões (`GET /sessions`) sem token. (Esperado: 200).
-- **[API-Users-AUTHZ-Other]** Usuário comum tentar deletar (`DELETE /users/{id}`) outro usuário. (Esperado: 403).
-- **[API-IDEMPOTENCE-DEL]** Validar idempotência do `DELETE /users/{id}` (chamar duas vezes). (Esperado: 1ª chamada 200, 2ª chamada 404 ou 200 com msg "não encontrado").
+### 7.3. Testes E2E
 
-## 6. Gestão de Defeitos (Bugs)
+- Fluxo completo de registro, login, busca de filme, seleção de assentos e checkout.
+- Fluxo de login, visualização de reservas e logout.
 
-Defeitos encontrados serão registrados como **Issues** no GitHub, com: Título claro, Passos para Reprodução, Resultado Esperado vs Obtido, Impacto/Prioridade e Evidências (logs, prints).
+## 8. Relatórios e Métricas
 
-## 7. Critérios de Aceite da Automação
+- Os resultados dos testes serão gerados pelo Robot Framework (HTML, XML).
+- Relatórios serão publicados no GitHub Actions como artefatos.
+- **Cobertura Atual**: 14 testes de API implementados cobrindo autenticação, filmes, reservas e teatros.
+- **Status de Execução**: Testes falham devido à API não estar rodando (Connection refused). Quando a API estiver ativa na porta 3000, todos os testes devem passar.
 
-- Cobertura dos cenários P0 e P1 definidos neste plano.
-- Código seguindo os padrões definidos (ServiceObjects, PageObjects, E2E Híbrido).
-- Testes independentes através de Setup/Teardown via API.
-- Documentação (`README.md`) completa para setup e execução.
-- Integração com CI (GitHub Actions) para testes de API.
+## 9. Cronograma (Exemplo)
+
+- **Semana 1:** Configuração do ambiente, estrutura de arquivos, testes de API (Autenticação, Filmes).
+- **Semana 2:** Testes de API (Sessões, Reservas, Usuários), dados de teste.
+- **Semana 3:** Testes Web (Login, Navegação, Filmes).
+- **Semana 4:** Testes E2E, refatoração, documentação final, CI.
+
+## 10. Responsabilidades
+
+- **QA Lead:** [Seu Nome]
+- **Desenvolvedores:** Equipe de desenvolvimento do Cinema App
+
+## 11. Glossário
+
+- **API:** Application Programming Interface
+- **E2E:** End-to-End
+- **JWT:** JSON Web Token
+- **PO:** Page Object
+- **SO:** Service Object
+
+---

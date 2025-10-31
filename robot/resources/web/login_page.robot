@@ -1,45 +1,45 @@
 *** Settings ***
-Resource    common_web.robot
+Library    Browser
+Resource    home_page.robot
+Resource    ../base_web.resource
 
 *** Variables ***
-${LOGIN_EMAIL_FIELD}    //input[@type='email' or @name='email']
-${LOGIN_PASSWORD_FIELD}    //input[@type='password' or @name='password']
-${LOGIN_BUTTON}    //button[contains(text(),'Entrar') or contains(text(),'Login')]
-${REGISTER_LINK}    //a[contains(text(),'Cadastrar') or contains(text(),'Registrar')]
-${LOGOUT_BUTTON}    //button[contains(text(),'Sair') or contains(text(),'Logout')]
-${ERROR_MESSAGE}    //div[contains(@class,'error') or contains(@class,'alert')] | //p[contains(@class,'error')]
+${LOGIN_URL}        ${FRONTEND_BASE_URL}/login
+${EMAIL_INPUT}      id=email
+${PASSWORD_INPUT}   id=password
+${LOGIN_BUTTON}     xpath=//button[contains(text(), "Entrar")]
+${ERROR_MESSAGE}    css=.alert-error
 
 *** Keywords ***
-Preencher Email Login
-    [Arguments]    ${email}
-    Preencher Campo    ${LOGIN_EMAIL_FIELD}    ${email}
+Navegar Para Login
+    [Documentation]    Navega para a página de login.
+    Go To    ${LOGIN_URL}
+    Wait Until Page Contains Element    ${EMAIL_INPUT}
 
-Preencher Senha Login
+Preencher Campo Email
+    [Arguments]    ${email}
+    Fill Text    ${EMAIL_INPUT}    ${email}
+
+Preencher Campo Senha
     [Arguments]    ${password}
-    Preencher Campo    ${LOGIN_PASSWORD_FIELD}    ${password}
+    Fill Text    ${PASSWORD_INPUT}    ${password}
 
 Clicar Botao Entrar
-    Clicar Elemento    ${LOGIN_BUTTON}
+    Click    ${LOGIN_BUTTON}
 
-Fazer Login
-    [Arguments]    ${email}    ${password}
-    Preencher Email Login    ${email}
-    Preencher Senha Login    ${password}
-    Clicar Botao Entrar
-    Esperar Pagina Carregar
-
-Clicar Link Cadastrar
-    Clicar Elemento    ${REGISTER_LINK}
-
-Verificar Mensagem Erro Login
+Verificar Mensagem de Erro
     [Arguments]    ${expected_message}
-    Esperar Elemento Visivel    ${ERROR_MESSAGE}
-    ${actual_message}=    Get Text    ${ERROR_MESSAGE}
-    Should Contain    ${actual_message}    ${expected_message}
+    Wait Until Page Contains    ${expected_message}
+    Get Text    ${ERROR_MESSAGE}    ==    ${expected_message}
 
 Verificar Login Bem Sucedido
-    Verificar Elemento Presente    ${LOGOUT_BUTTON}
+    Wait Until Page Contains Element    xpath=//h1[contains(text(),'Filmes em Cartaz')]
+    Location Should Contain    /
+    # Assuming / is the home page after successful login
 
-Fazer Logout
-    Clicar Elemento    ${LOGOUT_BUTTON}
-    Esperar Pagina Carregar
+Realizar Login
+    [Arguments]    ${email}    ${password}
+    Navegar Para Login
+    Preencher Campo Email    ${email}
+    Preencher Campo Senha    ${password}
+    Clicar Botao Entrar
