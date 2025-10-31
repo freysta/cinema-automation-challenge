@@ -1,5 +1,6 @@
 *** Settings ***
-Resource    common_web.robot
+Library    Browser
+Resource    ../base_web.resource
 
 *** Variables ***
 ${ADMIN_MENU}    //a[contains(text(),'Admin') or contains(text(),'Administrador')]
@@ -16,43 +17,53 @@ ${USER_ROW}    //tr[contains(@class,'user')] | //div[contains(@class,'user')]
 
 *** Keywords ***
 Acessar Pagina Admin
-    Clicar Elemento    ${ADMIN_MENU}
-    Esperar Pagina Carregar
+    [Documentation]    Acessa a página de administração.
+    Click    ${ADMIN_MENU}
+    Wait For Load State
 
 Clicar Adicionar Filme
-    Clicar Elemento    ${ADD_MOVIE_BUTTON}
-    Esperar Pagina Carregar
+    [Documentation]    Clica no botão para adicionar filme.
+    Click    ${ADD_MOVIE_BUTTON}
+    Wait For Load State
 
 Preencher Titulo Filme
     [Arguments]    ${title}
-    Preencher Campo    ${MOVIE_TITLE_FIELD}    ${title}
+    [Documentation]    Preenche o campo de título do filme.
+    Fill Text    ${MOVIE_TITLE_FIELD}    ${title}
 
 Preencher Descricao Filme
     [Arguments]    ${description}
-    Preencher Campo    ${MOVIE_DESCRIPTION_FIELD}    ${description}
+    [Documentation]    Preenche o campo de descrição do filme.
+    Fill Text    ${MOVIE_DESCRIPTION_FIELD}    ${description}
 
 Preencher Duracao Filme
     [Arguments]    ${duration}
-    Preencher Campo    ${MOVIE_DURATION_FIELD}    ${duration}
+    [Documentation]    Preenche o campo de duração do filme.
+    Fill Text    ${MOVIE_DURATION_FIELD}    ${duration}
 
 Clicar Salvar Filme
-    Clicar Elemento    ${SAVE_MOVIE_BUTTON}
-    Esperar Pagina Carregar
+    [Documentation]    Clica no botão para salvar o filme.
+    Click    ${SAVE_MOVIE_BUTTON}
+    Wait For Load State
 
 Verificar Filme Na Tabela Admin
     [Arguments]    ${movie_title}
-    Verificar Texto Presente    ${movie_title}
+    [Documentation]    Verifica se o filme está presente na tabela de administração.
+    Wait For Text    ${movie_title}
 
 Verificar Usuario Na Tabela
     [Arguments]    ${user_email}
-    Verificar Texto Presente    ${user_email}
+    [Documentation]    Verifica se o usuário está presente na tabela de administração.
+    Wait For Text    ${user_email}
 
 Clicar Excluir Filme
     [Arguments]    ${movie_title}
-    ${delete_button}=    Catenate    SEPARATOR=    //tr[contains(.,'${movie_title}')]//button[contains(text(),'Excluir')]
-    Clicar Elemento    ${delete_button}
-    Esperar Pagina Carregar
+    [Documentation]    Clica no botão para excluir um filme específico.
+    ${delete_button_locator}=    Set Variable    xpath=//tr[contains(.,'${movie_title}')]//button[contains(text(),'Excluir')]
+    Click    ${delete_button_locator}
+    Wait For Load State
 
 Verificar Mensagem Sucesso
     [Arguments]    ${message}
-    Verificar Texto Presente    ${message}
+    [Documentation]    Verifica se uma mensagem de sucesso é exibida.
+    Wait For Text    ${message}

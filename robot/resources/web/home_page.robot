@@ -1,32 +1,34 @@
 *** Settings ***
-Resource    common_web.robot
+Library    Browser
+Resource    ../base_web.resource
 
 *** Variables ***
-${MOVIE_LIST}    //div[contains(@class,'movie') or contains(@class,'card')] | //ul[contains(@class,'movies')]
-${MOVIE_CARD}    //div[contains(@class,'movie') or contains(@class,'card')][1]
-${MOVIE_TITLE}    //h3 | //h2 | //div[contains(@class,'title')]
-${SEARCH_FIELD}    //input[@type='text' and (@placeholder='Buscar' or @placeholder='Search')]
-${SEARCH_BUTTON}    //button[contains(text(),'Buscar') or contains(text(),'Search')]
+${HOME_URL}                 ${FRONTEND_BASE_URL}/
+${WELCOME_HEADING}          xpath=//h1[contains(text(), 'Welcome to Cinema App')]
+${ALL_MOVIES_BUTTON}        css=.btn-primary.btn-lg
+${FEATURED_MOVIES_HEADING}  xpath=//h2[contains(text(), 'Filmes em Cartaz')]
+${MOVIE_CARD}               css=.movie-card
 
 *** Keywords ***
-Verificar Lista Filmes Carregada
-    Esperar Elemento Visivel    ${MOVIE_LIST}
-    Verificar Elemento Presente    ${MOVIE_CARD}
+Navegar Para Pagina Inicial
+    [Documentation]    Navega para a página inicial.
+    Go To    ${HOME_URL}
+    Wait Until Page Contains Element    ${FEATURED_MOVIES_HEADING}
 
-Clicar Primeiro Filme
-    Clicar Elemento    ${MOVIE_CARD}
+Verificar Titulo Pagina Inicial
+    [Documentation]    Verifica o título da página inicial.
+    Wait For Text    Welcome to Cinema App
 
-Buscar Filme
-    [Arguments]    ${query}
-    Preencher Campo    ${SEARCH_FIELD}    ${query}
-    Clicar Elemento    ${SEARCH_BUTTON}
-    Esperar Pagina Carregar
+Clicar Botao Ver Todos Os Filmes
+    [Documentation]    Clica no botão 'Ver Todos Os Filmes'.
+    Click    ${ALL_MOVIES_BUTTON}
+
+Verificar Filmes Em Cartaz Visiveis
+    [Documentation]    Verifica se os filmes em cartaz estão visíveis.
+    Wait Until Page Contains Element    ${FEATURED_MOVIES_HEADING}
+    Wait Until Page Contains Element    ${MOVIE_CARD}
 
 Verificar Filme Na Lista
     [Arguments]    ${movie_title}
-    Verificar Texto Presente    ${movie_title}
-
-Verificar Numero Filmes
-    [Arguments]    ${expected_count}
-    ${count}=    Get Element Count    ${MOVIE_CARD}
-    Should Be Equal As Integers    ${count}    ${expected_count}
+    [Documentation]    Verifica se um filme específico está na lista.
+    Wait For Text    ${movie_title}
