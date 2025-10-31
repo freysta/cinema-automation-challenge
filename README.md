@@ -1,115 +1,146 @@
-# Cinema Automation Challenge
+# 🎬 Cinema App — Projeto de Automação de Testes (Challenge Final)
 
-Este repositório contém a suíte de testes automatizados para a aplicação Cinema App, desenvolvida como parte do Challenge Final do curso.
+## 👨‍💻 Autor
 
-## 🚀 Visão Geral
-O projeto visa garantir a qualidade da aplicação Cinema App através de testes automatizados de API (backend) e Web (frontend), utilizando o Robot Framework e Python. A suíte de testes segue as melhores práticas de automação, incluindo padrões como Page Objects e Service Objects, e implementa testes End-to-End (E2E) híbridos.
+Nome: Gabriel Lucena Ferreira
+Idade: 20
+Curso: Análise e Desenvolvimento de Sistemas — IFRO
+Semestre: 4º Período
+Cidade: Ji-Paraná
 
-## ✨ Funcionalidades Testadas
-- Autenticação de Usuários (Registro, Login, Logout, Gerenciamento de Perfil)
-- Gerenciamento e Visualização de Filmes
-- Gerenciamento e Visualização de Sessões
-- Processo de Reserva de Ingressos (Seleção de Assentos, Checkout)
-- Visualização de Histórico de Reservas
-- Navegação e Experiência do Usuário
+## 🌟 Visão Geral do Projeto
 
-## 🐛 Known Bugs
+Este repositório contém a suíte de testes automatizados para a aplicação Cinema App, desenvolvida como parte do Challenge Final PB AWS & AI for QE.
+O objetivo é garantir a qualidade da aplicação com uma suíte de testes full-stack (API + Frontend) utilizando Robot Framework, aplicando os padrões:
 
-This section details identified bugs in the Cinema App backend API, discovered during the automation testing phase. These issues prevent certain API tests from passing and highlight areas for backend improvement.
-
-### 1. Reservation Creation Fails Due to `totalPrice` Mismatch
-
--   **Description:** The `Reservation.js` Mongoose model defines `totalPrice` as a required field. However, the `createReservation` function in `reservationController.js` calculates this value internally and adds it to the reservation object *after* receiving the request body. Consequently, when a reservation creation request is sent without `totalPrice` in the payload, Mongoose's schema validation fails, resulting in a `400 Bad Request` error. This prevents any reservation-related API tests from successfully creating reservations.
--   **Impact:** Core reservation functionality is broken at the API level, making it impossible to create reservations. This directly impacts user experience for booking tickets.
--   **Suggested Backend Fix:**
-    -   **Option A (Recommended):** Modify the `Reservation.js` model to make `totalPrice` an optional field (`required: false`), as its value is derived and set by the controller.
-    -   **Option B:** Adjust the `createReservation` function in `reservationController.js` to explicitly construct the reservation object with the calculated `totalPrice` before passing it to `Reservation.create()`, ensuring the schema validation passes.
-
-### 2. Generic Validation Messages for Movie Creation
-
--   **Description:** When attempting to create a movie with invalid or missing data (e.g., a movie without a title or with an invalid duration), the backend's `errorHandler` middleware returns a generic "Validation failed" message. This occurs despite specific error messages being defined in the `Movie.js` Mongoose model (e.g., "Title is required", "Duração deve ser um número positivo").
--   **Impact:** Frontend applications cannot provide precise, user-friendly feedback regarding validation errors during movie creation, leading to a poor user experience. Developers must infer the exact validation failure from the generic message.
--   **Suggested Backend Fix:** Modify the `errorHandler` middleware (`src/middleware/error.js`) to extract and return the specific validation error messages from Mongoose's `err.errors` object when a `ValidationError` occurs, instead of a generic message.
+- Service Objects (API)
+- Page Objects (Web)
 
 ## 🛠️ Tecnologias Utilizadas
-- **Framework de Automação:** Robot Framework
-- **Linguagem:** Python
-- **Bibliotecas Robot:** `RequestsLibrary`, `SeleniumLibrary` (ou `Browser`), `FakerLibrary`, `JSONLibrary`
-- **Controle de Versão:** Git
-- **Integração Contínua:** GitHub Actions
 
-## 📂 Estrutura do Projeto
+| Componente             | Tecnologia                     | Uso                            |
+| ---------------------- | ------------------------------ | ------------------------------ |
+| Framework de Automação | Robot Framework                | Base da automação              |
+| Testes API             | RequestsLibrary                | Chamadas HTTP e validações     |
+| Testes Web             | SeleniumLibrary / Browser      | Automação UI & E2E             |
+| Padrões Arquiteturais  | Service Objects / Page Objects | Organização e reuso            |
+| Dados de Teste         | FakerLibrary                   | Geração de dados dinâmicos     |
+| Gestão de Defeitos     | GitHub Issues                  | Controle de bugs               |
+| CI/CD                  | GitHub Actions                 | Execução automática dos testes |
+
+## 📐 Estrutura do Projeto
+
 ```
-cinema-automation-challenge/
-├── docs/                       # Documentação do projeto (Plano de Testes, etc.)
-├── robot/                      # Contém todos os arquivos de automação do Robot Framework
-│   ├── data/                   # Dados de teste (JSON, Python)
-│   ├── resources/              # Keywords reutilizáveis (Service Objects, Page Objects)
-│   │   ├── api/                # Service Objects para testes de API
-│   │   └── web/                # Page Objects para testes Web
-│   └── tests/                  # Casos de teste
-│       ├── api/                # Testes de API
-│       ├── web/                # Testes Web
-│       └── e2e/                # Testes End-to-End híbridos
-├── .github/                    # Configurações do GitHub (workflows de CI/CD)
-│   └── workflows/
-│       └── run_tests.yml       # Workflow para execução de testes no GitHub Actions
-├── .gitignore                  # Arquivos e pastas a serem ignorados pelo Git
-├── README.md                   # Este arquivo
-└── requirements.txt            # Dependências Python do projeto Robot
+cinema-automation-challenge
+├── docs/                             # Documentação e artefatos
+├── robot/
+│   ├── tests/                        # Test suites
+│   │   ├── api/
+│   │   ├── web/
+│   │   └── e2e/
+│   ├── resources/                    # Keywords reutilizáveis
+│   │   ├── api/                      # Service Objects
+│   │   └── web/                      # Page Objects
+│   ├── data/                         # Massa de dados
+│   └── requirements.txt              # Dependências
+├── .github/workflows/                # CI/CD
+│   └── run_tests.yml
+└── README.md
 ```
 
-## ⚙️ Configuração do Ambiente
+- **Service Objects**: encapsulam requisições e validações de API
+- **Page Objects**: isolam seletores e ações de páginas
 
-### Pré-requisitos
+## 🚀 Configuração e Execução
+
+### Requisitos
+
 - Python 3.x
-- pip (gerenciador de pacotes Python)
+- Pip
 - Git
+- Chrome/Firefox + WebDriver
+- Node.js e MongoDB (para rodar a aplicação)
 
-### Instalação
-1. Clone o repositório:
-   ```bash
-   git clone <URL_DO_SEU_REPOSITORIO>
-   cd cinema-automation-challenge
-   ```
-2. Crie e ative um ambiente virtual (recomendado):
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # No Linux/macOS
-   # venv\Scripts\activate    # No Windows
-   ```
-3. Instale as dependências do Robot Framework:
-   ```bash
-   pip install -r robot/requirements.txt
-   ```
+### Iniciar Aplicação (Obrigatório)
 
-## ▶️ Como Executar os Testes
+#### Backend
 
-### Executar todos os testes
 ```bash
-robot robot/tests/
+git clone cinema-challenge-back
+npm install
+npm start
+# API em http://localhost:3000/api/v1
 ```
 
-### Executar testes de API
+#### Frontend
+
 ```bash
-robot robot/tests/api/
+git clone cinema-challenge-front
+npm install
+npm start
+# Web em http://localhost:5173
 ```
 
-### Executar testes Web
+### Instalar Automação
+
 ```bash
-robot robot/tests/web/
+git clone https://github.com/freysta/cinema-automation-challenge.git
+cd cinema-automation-challenge/robot
+
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+rfbrowser init  # se usando BrowserLibrary
 ```
 
-### Executar testes E2E
+Verifique as URLs base em `robot/resources/api/main_api.robot`.
+
+### Executar Testes
+
 ```bash
-robot robot/tests/e2e/
+# Suite completa
+robot -d results .
+
+# Apenas API
+robot -d results tests/api/
+
+# Apenas Web
+robot -d results tests/web/
 ```
 
-### Gerar Relatórios
-Após a execução, os relatórios HTML e XML serão gerados na pasta `results/` (configurado no `.gitignore`).
+## 📝 Planejamento e Abrangência
 
-## 🤝 Contribuição
-Siga o padrão Gitflow para contribuições. Crie branches de feature a partir de `develop`, faça commits descritivos e abra Pull Requests para `develop`.
+### Estratégia API-First
 
-## 📄 Licença
-Este projeto está licenciado sob a [Nome da Licença, ex: MIT License].
+- 72 cenários cobrindo:
+  - Autenticação, Usuários, Filmes, Salas, Sessões, Reservas
+  - Happy path, negativos, validações, concorrência, idempotência
+- Testes E2E híbridos com criação/limpeza de dados pela API
+
+## 🐞 Issues Identificadas
+
+| ID     | Severidade | Resumo                                                |
+| ------ | ---------- | ----------------------------------------------------- |
+| BUG-01 | Crítico    | JWT não validado corretamente (401 bloqueando E2E)    |
+| BUG-02 | Alta       | Mensagens inconsistentes de autenticação              |
+| BUG-03 | Alta       | Falha na validação da senha atual (PUT /auth/profile) |
+| BUG-04 | Alta       | Falha na validação de e-mail duplicado                |
+| BUG-05 | Média      | 500 em validações ao invés de 4xx                     |
+| BUG-06 | Média      | Registro com e-mail existente retornando 400          |
+
+## 🧠 Inovação
+
+### CI/CD
+
+- Workflow GitHub Actions executando testes de API a cada push/PR.
+
+### GenAI
+
+- Prompt documentado em `docs/prompt_genai.md` para expansão de cenários.
+
+Caso queira, posso agora:
+
+- Exportar versão .md pronta pra colar no GitHub
+- Criar versão em inglês
+- Adaptar para README estilo Hackathon (mais visual)
+- Gerar badges, tabela de status de testes, GIF do fluxo UI, badges de stack
