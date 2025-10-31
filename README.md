@@ -136,10 +136,3 @@ robot -d results tests/web/
 ### GenAI
 
 - Prompt documentado em `docs/prompt_genai.md` para expansão de cenários.
-
-Caso queira, posso agora:
-
-- Exportar versão .md pronta pra colar no GitHub
-- Criar versão em inglês
-- Adaptar para README estilo Hackathon (mais visual)
-- Gerar badges, tabela de status de testes, GIF do fluxo UI, badges de stack
