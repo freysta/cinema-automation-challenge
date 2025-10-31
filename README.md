@@ -26,7 +26,6 @@ O objetivo é garantir a qualidade da aplicação com uma suíte de testes full-
 | Padrões Arquiteturais  | Service Objects / Page Objects | Organização e reuso            |
 | Dados de Teste         | FakerLibrary                   | Geração de dados dinâmicos     |
 | Gestão de Defeitos     | GitHub Issues                  | Controle de bugs               |
-| CI/CD                  | GitHub Actions                 | Execução automática dos testes |
 
 ## 📐 Estrutura do Projeto
 
