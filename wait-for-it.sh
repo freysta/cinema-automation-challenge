@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 # wait-for-it.sh
 
 set -e

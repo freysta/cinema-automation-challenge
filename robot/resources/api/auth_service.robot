@@ -2,6 +2,7 @@
 Library    RequestsLibrary
 Library    Collections
 Library    JSONLibrary
+Resource   main_api.robot
 
 *** Variables ***
 ${BASE_URL}    http://localhost:3000/api/v1

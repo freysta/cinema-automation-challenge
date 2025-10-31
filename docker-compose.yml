@@ -1,17 +1,17 @@
-version: '3.8'
+version: "3.8"
 
 services:
   backend:
     build:
       context: ..
-      dockerfile: cinema-automation-challenge/Dockerfile.backend
+      2xxrfile: cinema-automation-challenge/Dockerfile.backend
     container_name: cinema-backend
     ports:
       - "3000:3000"
     environment:
       NODE_ENV: development
       PORT: 3000
-      MONGO_URI: mongodb://mongo:27017/cinema_db
+      MONGODB_URI: mongodb://mongo:27017/cinema_db
       JWT_SECRET: your_jwt_secret
     depends_on:
       mongo:
@@ -20,7 +20,7 @@ services:
       - ../cinema-challenge-back:/app
       - /app/node_modules
     restart: always
-    command: sh -c "./wait-for-it.sh mongo:27017 -- npm start"
+    command: sh -c "/usr/local/bin/wait-for-it.sh mongo:27017 -- npm start"
 
   frontend:
     build:
