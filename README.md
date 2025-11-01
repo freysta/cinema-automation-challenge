@@ -307,38 +307,35 @@ E2E002 Fluxo Compra Ingresso E2E - Compra Bem Sucedida ✅ PASS
 
 E2E003 Fluxo Compra Ingresso E2E - Concorrencia ✅ PASS
 
-## 🐞 Issues Identificadas
+## 🐛 Bugs Identificados
 
-| ID     | Severidade | Resumo                                                         |
-| ------ | ---------- | -------------------------------------------------------------- |
-| BUG-01 | Crítico    | JWT não validado corretamente (401 bloqueando E2E)             |
-| BUG-02 | Alta       | Mensagens inconsistentes de autenticação                       |
-| BUG-03 | Alta       | Falha na validação da senha atual (PUT /auth/profile)          |
-| BUG-04 | Alta       | Falha na validação de e-mail duplicado                         |
-| BUG-05 | Média      | 500 em validações ao invés de 4xx                              |
-| BUG-06 | Média      | Registro com e-mail existente retornando 400                   |
-| BUG-07 | Alta       | API não valida login com senha inválida                        |
-| BUG-08 | Alta       | API não valida login com usuário inexistente                   |
-| BUG-09 | Alta       | API permite registro com email duplicado                       |
-| BUG-10 | Média      | API não valida formato de email no registro                    |
-| BUG-11 | Alta       | API não valida acesso ao perfil sem autenticação               |
-| BUG-12 | Alta       | API não valida token inválido no perfil                        |
-| BUG-13 | Média      | API não valida atualização de perfil sem senha atual           |
-| BUG-14 | Média      | API permite atualização de perfil com email existente          |
-| BUG-15 | Média      | API não valida cadastro de filme sem título                    |
-| BUG-16 | Média      | API não valida duração inválida de filme                       |
-| BUG-17 | Baixa      | API não valida título muito longo de filme                     |
-| BUG-18 | Alta       | API não valida compra de ingresso para sessão lotada           |
-| BUG-19 | Alta       | API não valida concorrência na compra de ingressos             |
-| BUG-20 | Alta       | API não valida acesso às reservas sem autenticação             |
-| BUG-21 | Alta       | API não valida permissões para atualizar status de reserva     |
-| BUG-22 | Média      | API não valida transição de status de reserva                  |
-| BUG-23 | Alta       | API não valida permissões para resetar assentos                |
-| BUG-24 | Média      | API não valida sessão inexistente para reset de assentos       |
-| BUG-25 | Alta       | API não valida permissões para cadastrar teatro                |
-| BUG-26 | Média      | API não valida campo obrigatório nome do teatro                |
-| BUG-27 | Média      | API não valida tipo inválido de teatro                         |
-| BUG-28 | Alta       | API não valida permissões de acesso a dados de outros usuários |
+| ID     | Severidade | Descrição                                                                  | Teste Relacionado                                        | Status  |
+| ------ | ---------- | -------------------------------------------------------------------------- | -------------------------------------------------------- | ------- |
+| BUG-01 | Alta       | API permite cadastrar filme sem título obrigatório                         | Teste Tentar Cadastrar Filme Sem Titulo                  | ❌ FAIL |
+| BUG-02 | Média      | API aceita durações inválidas (negativas) para filmes                      | Teste Tentar Cadastrar Filme Com Duracao Invalida        | ❌ FAIL |
+| BUG-03 | Baixa      | API permite títulos de filmes excessivamente longos                        | Teste Tentar Cadastrar Filme Com Titulo Muito Longo      | ❌ FAIL |
+| BUG-04 | Alta       | API permite comprar ingressos para sessões completamente lotadas           | Teste Comprar Ingresso Para Sessao Lotada                | ❌ FAIL |
+| BUG-05 | Alta       | API não valida concorrência na compra de assentos                          | Teste Tentar Compra Concorrente Para Ultimo Assento      | ❌ FAIL |
+| BUG-06 | Alta       | API permite acesso às reservas sem autenticação                            | Teste Obter Minhas Reservas Sem Autenticacao             | ❌ FAIL |
+| BUG-07 | Alta       | Usuários comuns podem atualizar status de reservas                         | Teste Atualizar Status Da Reserva Sem Permissao Admin    | ❌ FAIL |
+| BUG-08 | Média      | API aceita transições de status inválidas para reservas                    | Teste Atualizar Status Da Reserva Com Transicao Invalida | ❌ FAIL |
+| BUG-09 | Alta       | Usuários comuns podem resetar assentos de sessões                          | Teste Resetar Assentos Sem Permissao Admin               | ❌ FAIL |
+| BUG-10 | Média      | API não retorna erro adequado para reset de assentos em sessão inexistente | Teste Resetar Assentos De Sessao Inexistente             | ❌ FAIL |
+| BUG-11 | Alta       | Usuários comuns podem cadastrar teatros                                    | Teste Tentar Cadastrar Teatro Com Token User             | ❌ FAIL |
+| BUG-12 | Média      | API permite cadastrar teatros sem nome obrigatório                         | Teste Tentar Cadastrar Teatro Sem Nome                   | ❌ FAIL |
+| BUG-13 | Média      | API aceita tipos inválidos para teatros                                    | Teste Tentar Cadastrar Teatro Com Tipo Invalido          | ❌ FAIL |
+| BUG-14 | Alta       | Usuários comuns podem acessar dados de outros usuários                     | Teste Obter Usuario Por ID Comum Acessando Outro Usuario | ❌ FAIL |
+| BUG-15 | Alta       | Usuários comuns podem atualizar dados de outros usuários                   | Teste Atualizar Usuario Por ID (com token user)          | ❌ FAIL |
+| BUG-16 | Alta       | Usuários comuns podem deletar outros usuários                              | Teste Deletar Usuario Por ID (com token user)            | ❌ FAIL |
+| BUG-17 | Média      | API permite cadastrar usuários sem nome obrigatório                        | Teste Registrar Usuario Sem Nome                         | ❌ FAIL |
+| BUG-18 | Média      | API aceita emails com formato inválido                                     | Teste Registrar Usuario Com Email Invalido               | ❌ FAIL |
+| BUG-19 | Média      | API aceita senhas muito curtas                                             | Teste Registrar Usuario Com Senha Curta                  | ❌ FAIL |
+| BUG-20 | Alta       | API permite emails duplicados no cadastro                                  | Teste Registrar Usuario Com Email Duplicado              | ❌ FAIL |
+| BUG-21 | Alta       | Usuários comuns podem listar todos os usuários                             | Teste Listar Usuarios (com token user)                   | ❌ FAIL |
+| BUG-22 | Alta       | API permite atualizar perfil sem senha atual                               | Teste Atualizar Perfil Sem Senha Atual                   | ❌ FAIL |
+| BUG-23 | Alta       | API permite atualizar perfil com email existente                           | Teste Atualizar Perfil Com Email Existente               | ❌ FAIL |
+| BUG-24 | Alta       | Usuários comuns podem atualizar perfil de outros usuários                  | Teste Atualizar Perfil De Outro Usuario                  | ❌ FAIL |
+| BUG-25 | Alta       | Usuários comuns podem deletar perfil de outros usuários                    | Teste Deletar Perfil De Outro Usuario                    | ❌ FAIL |
 
 =======
 
@@ -365,3 +362,7 @@ E2E003 Fluxo Compra Ingresso E2E - Concorrencia ✅ PASS
 ### GenAI
 
 - Prompt documentado em `docs/prompt_genai.md` para expansão de cenários.
+
+### CI/CD
+
+- Workflow GitHub Actions executando testes de API a cada push/PR.
