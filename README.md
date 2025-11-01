@@ -18,15 +18,20 @@ O objetivo é garantir a qualidade da aplicação com uma suíte de testes full-
 
 ## 🛠️ Tecnologias Utilizadas
 
-| Componente             | Tecnologia                     | Uso                            |
-| ---------------------- | ------------------------------ | ------------------------------ |
-| Framework de Automação | Robot Framework                | Base da automação              |
-| Testes API             | RequestsLibrary                | Chamadas HTTP e validações     |
-| Testes Web             | SeleniumLibrary / Browser      | Automação UI & E2E             |
-| Padrões Arquiteturais  | Service Objects / Page Objects | Organização e reuso            |
-| Dados de Teste         | FakerLibrary                   | Geração de dados dinâmicos     |
-| Gestão de Defeitos     | GitHub Issues                  | Controle de bugs               |
-| CI/CD                  | GitHub Actions                 | Execução automática dos testes |
+| Componente             | Tecnologia                     | Uso                        |
+| ---------------------- | ------------------------------ | -------------------------- |
+| Framework de Automação | Robot Framework                | Base da automação          |
+| Testes API             | RequestsLibrary                | Chamadas HTTP e validações |
+| Testes Web             | SeleniumLibrary / Browser      | Automação UI & E2E         |
+| Padrões Arquiteturais  | Service Objects / Page Objects | Organização e reuso        |
+| Dados de Teste         | FakerLibrary                   | Geração de dados dinâmicos |
+| Gestão de Defeitos     | GitHub Issues                  | Controle de bugs           |
+
+<<<<<<< HEAD
+| CI/CD | GitHub Actions | Execução automática dos testes |
+=======
+
+> > > > > > > b81bf46c61982f77d6254a2c0083229fd05468ad
 
 ## 📐 Estrutura do Projeto
 
@@ -111,6 +116,8 @@ robot -d results tests/web/
 ## 📝 Planejamento e Abrangência
 
 ### Estratégia API-First
+
+<<<<<<< HEAD
 
 - 60 cenários cobrindo:
   - Autenticação (11 testes), Usuários (6 testes), Filmes (8 testes), Salas (8 testes), Sessões (7 testes), Reservas (12 testes)
@@ -300,325 +307,60 @@ E2E002 Fluxo Compra Ingresso E2E - Compra Bem Sucedida ✅ PASS
 
 E2E003 Fluxo Compra Ingresso E2E - Concorrencia ✅ PASS
 
-## 🐛 Bugs Identificados
-
-🔴 Crítico
-
-BUG-001: API não valida login com senha inválida
-
-Teste: AUTH002
-
-Severidade: Alta
-
-Descrição: A API não está retornando erro adequado para tentativas de login com senha inválida
-
-Comportamento Esperado: Retornar 401 Unauthorized com mensagem "Invalid email or password"
-
-Comportamento Atual: Teste falhando, indicando que a validação não está funcionando
-
-Impacto: Segurança comprometida - usuários podem tentar logins indefinidamente
-
-BUG-002: API não valida login com usuário inexistente
-
-Teste: AUTH003
-
-Severidade: Alta
-
-Descrição: A API não está retornando erro adequado para tentativas de login com email inexistente
-
-Comportamento Esperado: Retornar 401 Unauthorized com mensagem "Invalid email or password"
-
-Comportamento Atual: Teste falhando, indicando que a validação não está funcionando
-
-Impacto: Segurança comprometida - vazamento de informações sobre existência de usuários
-
-BUG-003: API permite registro com email duplicado
-
-Teste: AUTH004
-
-Severidade: Alta
-
-Descrição: A API permite registrar usuários com emails já existentes
-
-Comportamento Esperado: Retornar 400 Bad Request com mensagem "User already exists"
-
-Comportamento Atual: Teste falhando, indicando que a validação de unicidade não está funcionando
-
-Impacto: Dados inconsistentes e possível conflito de contas
-
-BUG-004: API não valida formato de email no registro
-
-Teste: AUTH005
-
-Severidade: Média
-
-Descrição: A API aceita emails com formato inválido durante o registro
-
-Comportamento Esperado: Retornar 400 Bad Request com mensagem "Validation failed"
-
-Comportamento Atual: Teste falhando, indicando que a validação de formato não está funcionando
-
-Impacto: Dados inválidos no sistema
-
-BUG-005: API não valida acesso ao perfil sem autenticação
-
-Teste: AUTH007
-
-Severidade: Alta
-
-Descrição: A API permite acesso ao endpoint de perfil sem token de autenticação
-
-Comportamento Esperado: Retornar 401 Unauthorized com mensagem "Not authorized, no token"
-
-Comportamento Atual: Teste falhando, indicando que a autenticação obrigatória não está funcionando
-
-Impacto: Exposição de dados sensíveis
-
-BUG-006: API não valida token inválido no perfil
-
-Teste: AUTH008
-
-Severidade: Alta
-
-Descrição: A API permite acesso ao endpoint de perfil com token inválido
-
-Comportamento Esperado: Retornar 401 Unauthorized com mensagem "Not authorized, invalid token"
-
-Comportamento Atual: Teste falhando, indicando que a validação de token não está funcionando
-
-Impacto: Exposição de dados sensíveis
-
-BUG-007: API não valida atualização de perfil sem senha atual
-
-Teste: AUTH010
-
-Severidade: Média
-
-Descrição: A API permite atualizar senha sem fornecer a senha atual
-
-Comportamento Esperado: Retornar 401 Unauthorized com mensagem "Current password is incorrect"
-
-Comportamento Atual: Teste falhando, indicando que a validação de senha atual não está funcionando
-
-Impacto: Segurança comprometida - alteração de senha sem verificação
-
-BUG-008: API permite atualização de perfil com email existente
-
-Teste: AUTH011
-
-Severidade: Média
-
-Descrição: A API permite atualizar o email do perfil para um email já usado por outro usuário
-
-Comportamento Esperado: Retornar 409 Conflict com mensagem "Email already in use"
-
-Comportamento Atual: Teste falhando, indicando que a validação de unicidade não está funcionando
-
-Impacto: Dados inconsistentes e possível conflito de contas
-
-🟡 Médio
-
-BUG-009: API não valida cadastro de filme sem título
-
-Teste: MOV003
-
-Severidade: Média
-
-Descrição: A API permite cadastrar filmes sem título obrigatório
-
-Comportamento Esperado: Retornar 400 Bad Request
-
-Comportamento Atual: Teste falhando, indicando que a validação de campo obrigatório não está funcionando
-
-Impacto: Dados inconsistentes no catálogo de filmes
-
-BUG-010: API não valida duração inválida de filme
-
-Teste: MOV004
-
-Severidade: Média
-
-Descrição: A API aceita durações inválidas (negativas ou zero) para filmes
-
-Comportamento Esperado: Retornar 400 Bad Request
-
-Comportamento Atual: Teste falhando, indicando que a validação de duração não está funcionando
-
-Impacto: Dados inconsistentes no catálogo de filmes
-
-BUG-011: API não valida título muito longo de filme
-
-Teste: MOV005
-
-Severidade: Baixa
-
-Descrição: A API aceita títulos de filmes com comprimento excessivo
-
-Comportamento Esperado: Retornar 400 Bad Request
-
-Comportamento Atual: Teste falhando, indicando que a validação de tamanho não está funcionando
-
-Impacto: Possível problema de exibição na interface
-
-BUG-012: API não valida compra de ingresso para sessão lotada
-
-Teste: RES001
-
-Severidade: Alta
-
-Descrição: A API permite comprar ingressos para sessões que já estão lotadas
-
-Comportamento Esperado: Retornar erro apropriado (400 ou 409)
-
-Comportamento Atual: Teste falhando, indicando que a validação de disponibilidade não está funcionando
-
-Impacto: Overbooking e conflitos de assentos
-
-BUG-013: API não valida concorrência na compra de ingressos
-
-Teste: RES002
-
-Severidade: Alta
-
-Descrição: A API permite que múltiplos usuários comprem o mesmo assento simultaneamente
-
-Comportamento Esperado: Apenas um usuário deve conseguir comprar o último assento
-
-Comportamento Atual: Teste falhando, indicando que não há controle de concorrência
-
-Impacto: Overbooking e conflitos de assentos
-
-BUG-014: API não valida acesso às reservas sem autenticação
-
-Teste: RES008
-
-Severidade: Alta
-
-Descrição: A API permite acesso ao endpoint de reservas sem token de autenticação
-
-Comportamento Esperado: Retornar 401 Unauthorized
-
-Comportamento Atual: Teste falhando, indicando que a autenticação obrigatória não está funcionando
-
-Impacto: Exposição de dados sensíveis de reservas
-
-BUG-015: API não valida permissões para atualizar status de reserva
-
-Teste: RES011
-
-Severidade: Alta
-
-Descrição: Usuários comuns podem atualizar status de reservas, que deveria ser privilégio de admin
-
-Comportamento Esperado: Retornar 403 Forbidden com mensagem "User role user is not authorized to access this route"
-
-Comportamento Atual: Teste falhando, indicando que as permissões não estão funcionando
-
-Impacto: Violação de controle de acesso
-
-BUG-016: API não valida transição de status de reserva
-
-Teste: RES012
-
-Severidade: Média
-
-Descrição: A API aceita transições de status inválidas para reservas
-
-Comportamento Esperado: Retornar 400 Bad Request com mensagem "Invalid status transition"
-
-Comportamento Atual: Teste falhando, indicando que a validação de transição não está funcionando
-
-Impacto: Estados inconsistentes de reservas
-
-BUG-017: API não valida permissões para resetar assentos
-
-Teste: SES006
-
-Severidade: Alta
-
-Descrição: Usuários comuns podem resetar assentos de sessões, que deveria ser privilégio de admin
-
-Comportamento Esperado: Retornar 403 Forbidden
-
-Comportamento Atual: Teste falhando, indicando que as permissões não estão funcionando
-
-Impacto: Violação de controle de acesso e possível manipulação indevida
-
-BUG-018: API não valida sessão inexistente para reset de assentos
-
-Teste: SES007
-
-Severidade: Média
-
-Descrição: A API não retorna erro adequado quando tenta resetar assentos de sessão inexistente
-
-Comportamento Esperado: Retornar 404 Not Found com mensagem "Session not found"
-
-Comportamento Atual: Teste falhando, indicando que a validação de existência não está funcionando
-
-Impacto: Comportamento inesperado para sessões inexistentes
-
-BUG-019: API não valida permissões para cadastrar teatro
-
-Teste: THE003
-
-Severidade: Alta
-
-Descrição: Usuários comuns podem cadastrar teatros, que deveria ser privilégio de admin
-
-Comportamento Esperado: Retornar 403 Forbidden
-
-Comportamento Atual: Teste falhando, indicando que as permissões não estão funcionando
-
-Impacto: Violação de controle de acesso
-
-BUG-020: API não valida campo obrigatório nome do teatro
-
-Teste: THE004
-
-Severidade: Média
-
-Descrição: A API permite cadastrar teatros sem nome obrigatório
-
-Comportamento Esperado: Retornar 400 Bad Request
-
-Comportamento Atual: Teste falhando, indicando que a validação de campo obrigatório não está funcionando
-
-Impacto: Dados inconsistentes no cadastro de teatros
-
-BUG-021: API não valida tipo inválido de teatro
-
-Teste: THE005
-
-Severidade: Média
-
-Descrição: A API aceita tipos inválidos para teatros
-
-Comportamento Esperado: Retornar 400 Bad Request
-
-Comportamento Atual: Teste falhando, indicando que a validação de tipo não está funcionando
-
-Impacto: Dados inconsistentes no cadastro de teatros
-
-BUG-022: API não valida permissões de acesso a dados de outros usuários
-
-Teste: USR005
-
-Severidade: Alta
-
-Descrição: Usuários comuns podem acessar dados de outros usuários
-
-Comportamento Esperado: Retornar 403 Forbidden com mensagem "User role user is not authorized to access this route"
-
-Comportamento Atual: Teste falhando, indicando que as permissões não estão funcionando
-
-Impacto: Violação de privacidade e exposição de dados sensíveis
+## 🐞 Issues Identificadas
+
+| ID     | Severidade | Resumo                                                         |
+| ------ | ---------- | -------------------------------------------------------------- |
+| BUG-01 | Crítico    | JWT não validado corretamente (401 bloqueando E2E)             |
+| BUG-02 | Alta       | Mensagens inconsistentes de autenticação                       |
+| BUG-03 | Alta       | Falha na validação da senha atual (PUT /auth/profile)          |
+| BUG-04 | Alta       | Falha na validação de e-mail duplicado                         |
+| BUG-05 | Média      | 500 em validações ao invés de 4xx                              |
+| BUG-06 | Média      | Registro com e-mail existente retornando 400                   |
+| BUG-07 | Alta       | API não valida login com senha inválida                        |
+| BUG-08 | Alta       | API não valida login com usuário inexistente                   |
+| BUG-09 | Alta       | API permite registro com email duplicado                       |
+| BUG-10 | Média      | API não valida formato de email no registro                    |
+| BUG-11 | Alta       | API não valida acesso ao perfil sem autenticação               |
+| BUG-12 | Alta       | API não valida token inválido no perfil                        |
+| BUG-13 | Média      | API não valida atualização de perfil sem senha atual           |
+| BUG-14 | Média      | API permite atualização de perfil com email existente          |
+| BUG-15 | Média      | API não valida cadastro de filme sem título                    |
+| BUG-16 | Média      | API não valida duração inválida de filme                       |
+| BUG-17 | Baixa      | API não valida título muito longo de filme                     |
+| BUG-18 | Alta       | API não valida compra de ingresso para sessão lotada           |
+| BUG-19 | Alta       | API não valida concorrência na compra de ingressos             |
+| BUG-20 | Alta       | API não valida acesso às reservas sem autenticação             |
+| BUG-21 | Alta       | API não valida permissões para atualizar status de reserva     |
+| BUG-22 | Média      | API não valida transição de status de reserva                  |
+| BUG-23 | Alta       | API não valida permissões para resetar assentos                |
+| BUG-24 | Média      | API não valida sessão inexistente para reset de assentos       |
+| BUG-25 | Alta       | API não valida permissões para cadastrar teatro                |
+| BUG-26 | Média      | API não valida campo obrigatório nome do teatro                |
+| BUG-27 | Média      | API não valida tipo inválido de teatro                         |
+| BUG-28 | Alta       | API não valida permissões de acesso a dados de outros usuários |
+
+=======
+
+- 72 cenários cobrindo:
+  - Autenticação, Usuários, Filmes, Salas, Sessões, Reservas
+  - Happy path, negativos, validações, concorrência, idempotência
+- Testes E2E híbridos com criação/limpeza de dados pela API
+
+## 🐞 Issues Identificadas
+
+| ID     | Severidade | Resumo                                                |
+| ------ | ---------- | ----------------------------------------------------- |
+| BUG-01 | Crítico    | JWT não validado corretamente (401 bloqueando E2E)    |
+| BUG-02 | Alta       | Mensagens inconsistentes de autenticação              |
+| BUG-03 | Alta       | Falha na validação da senha atual (PUT /auth/profile) |
+| BUG-04 | Alta       | Falha na validação de e-mail duplicado                |
+| BUG-05 | Média      | 500 em validações ao invés de 4xx                     |
+| BUG-06 | Média      | Registro com e-mail existente retornando 400          |
+
+> > > > > > > b81bf46c61982f77d6254a2c0083229fd05468ad
 
 ## 🧠 Inovação
-
-### CI/CD
-
-- Workflow GitHub Actions executando testes de API a cada push/PR.
 
 ### GenAI
 

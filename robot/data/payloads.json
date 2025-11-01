@@ -1,0 +1,25 @@
+{
+  "auth": {
+    "login_admin": {
+      "email": "admin@example.com",
+      "password": "password123"
+    },
+    "register_user": {
+      "name": "",
+      "email": "",
+      "password": ""
+    }
+  },
+  "movies": {
+    "create_movie_valid": {
+      "title": "",
+      "synopsis": "",
+      "director": "",
+      "genres": ["Action"],
+      "duration": 120,
+      "classification": "PG-13",
+      "poster": "",
+      "releaseDate": "2023-01-01T00:00:00.000Z"
+    }
+  }
+}
